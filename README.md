@@ -1,4 +1,4 @@
-kaliBackOffice
+kaliSite
 ==============
 
-Projet KaliBackOffice
+Projet Kali Site Vitrine
