@@ -1,0 +1,5 @@
+gbl_site_vitrine:
+    resource: "@GblSiteVitrineBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
