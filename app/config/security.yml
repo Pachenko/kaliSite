@@ -8,7 +8,7 @@ security:
 
     providers:
         custom:
-            id: acme_user.my_provider
+            id: gbl_user.my_provider
 
     firewalls:
         main:

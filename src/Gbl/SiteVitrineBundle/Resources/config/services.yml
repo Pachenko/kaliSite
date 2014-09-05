@@ -1,5 +1,5 @@
 services:
-    acme_user.my_provider:
+    gbl_user.my_provider:
         class: Gbl\SiteVitrineBundle\Security\Provider\MyProvider
         public: false
         arguments: ["@fos_user.user_manager"]
