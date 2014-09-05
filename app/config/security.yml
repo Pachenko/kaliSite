@@ -7,14 +7,16 @@ security:
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 
     providers:
-        fos_userbundle:
-            id: fos_user.user_provider.username
+        custom:
+            id: acme_user.my_provider
 
     firewalls:
         main:
             pattern: ^/
             form_login:
-                provider: fos_userbundle
+                provider: custom
+                login_path: /login
+                check_path: /login_check
                 csrf_provider: form.csrf_provider
             logout:       true
             anonymous:    true
