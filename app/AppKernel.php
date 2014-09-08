@@ -19,6 +19,8 @@ class AppKernel extends Kernel
             new Gbl\SiteVitrineBundle\GblSiteVitrineBundle(),
         	new FOS\UserBundle\FOSUserBundle(),
         	new Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
+        	new Braincrafted\Bundle\BootstrapBundle\BraincraftedBootstrapBundle(),
+        	new Bmatzner\FontAwesomeBundle\BmatznerFontAwesomeBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
