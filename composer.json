@@ -35,9 +35,6 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "sensio/buzz-bundle": "dev-master",
-        "braincrafted/bootstrap-bundle": "~2.0",
-        "twbs/bootstrap": "3.0.*",
-        "jquery/jquery":  "1.10.*",
         "bmatzner/fontawesome-bundle": "~4.1"
     },
     "require-dev": {

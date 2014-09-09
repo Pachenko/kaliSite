@@ -10,10 +10,11 @@ class DefaultController extends Controller
 {
     /**
      * @Route("/")
+     * @Route("/index")
      * @Template()
      */
     public function indexAction()
     {
-        return array();
+        return $this->render('GblSiteVitrineBundle:Default:index.html.twig');
     }
 }
