@@ -7,22 +7,6 @@ body {
   color: #5a5a5a;
 }
 
-@media all and (max-width: 1024px)
-{
-    #myCarousel
-    {
-        display: none;
-    }
-}
-
-@media all and (max-width: 1024px)
-{
-    #header-logo
-    {
-        display: none;
-    }
-}
-
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
 
