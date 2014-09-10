@@ -2,31 +2,28 @@
 
 {% block produits %}
 	{% for produit in produits %}
-		<div class="col-6 col-sm-6 col-lg-4">
-            <h2>{{ produit.nom }}</h2>
-            <img class="listeProduit" src="http://localhost/kaliBackOffice/web/uploads/{{ produit.file_img }}" />
-            <p>Description : {{ produit.description }}</p>
-            <p>Categorie : {{ produit.categorie.nom }}</p>
-            <p><a class="btn btn-default" href="" role="button">Acheter</a>
-            <a class="btn btn-default" href="../produits/{{ produit.reference }}" role="button">Details</a></p>
+	<div class="col-sm-4 col-lg-4 col-md-4">
+		<div class="thumbnail">
+			<img src="http://placehold.it/320x150" alt="">
+				<div class="caption">
+	            	<h4 class="pull-right">{{ produit.prix }} euros</h4>
+	                <h4><a href="#">{{ produit.nom }}</a></h4>
+	                <p>{{ produit.description }}</p>
+				</div>
+					<p>
+	                	<a class="btn btn-default acheter" href="" role="button">Acheter</a>
+	                    <a class="btn btn-default" href="../produits/{{ produit.reference }}" role="button">Details</a>
+	                    <input type="hidden" class="reference" value="{{ produit.reference }}"/>
+	                </p>
 		</div>
+	</div>
 	{% endfor %}
 {% endblock %}
 
 {% block categories %}
 	{% for categorie in categories %}
-		<a href="{{ categorie.nom }}" class="list-group-item active">{{ categorie.nom }}</a>
+		<a href="{{ categorie.nom }}" class="list-group-item">{{ categorie.nom }}</a>
 	{% endfor %}
 {% endblock %}
 
-                            <img src="http://placehold.it/320x150" alt="">
-                            <div class="caption">
-                                <h4 class="pull-right">$24.99</h4>
-                                <h4><a href="#">First Product</a>
-                                </h4>
-                                <p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
-                            </div>
-                            <p>
-                            	<a class="btn btn-default" href="" role="button">Acheter</a>
-                            	<a class="btn btn-default" href="" role="button">Details</a>
-                            </p>
+                         

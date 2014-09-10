@@ -30,9 +30,7 @@
             <div class="col-md-3">
                 <p class="lead">Kali</p>
                 <div class="list-group">
-                    <a href="#" class="list-group-item">Category 1</a>
-                    <a href="#" class="list-group-item">Category 2</a>
-                    <a href="#" class="list-group-item">Category 3</a>
+                	{% block categories %}{% endblock %}
                 </div>
             </div>
             <div class="col-md-9">
@@ -66,13 +64,11 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-4 col-lg-4 col-md-4">
-                        <div class="thumbnail">
-							{% block produits %}{% endblock %}
-                        </div>
-                    </div>
+					{% block produits %}{% endblock %}
                 </div>
-            </div>
+			</div>
+		</div>
+	</div>
         </div>
     </div>
     <div class="container">
@@ -87,7 +83,7 @@
     </div>
     <script src="{{ asset('js/jquery.js') }}"></script>
 	<script src="{{ asset('js/bootstrap.min.js') }}"></script> 
-	<script src="{{ asset('js/docs.js') }}"></script> 
+	<script src="{{ asset('js/panier.js') }}"></script> 
 	{% block javascripts %}{% endblock %}
   </body>
 </html>
