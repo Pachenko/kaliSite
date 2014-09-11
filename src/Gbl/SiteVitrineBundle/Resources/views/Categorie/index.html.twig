@@ -4,7 +4,7 @@
 	{% for produit in produits %}
 	<div class="col-sm-4 col-lg-4 col-md-4">
 		<div class="thumbnail">
-			<img src="http://placehold.it/320x150" alt="">
+			<img src="http://localhost/kaliBackOffice/web/uploads/{{ produit.file_img }}" alt="">
 				<div class="caption">
 	            	<h4 class="pull-right">{{ produit.prix }} euros</h4>
 	                <h4><a href="#">{{ produit.nom }}</a></h4>

@@ -44,6 +44,11 @@ body {
     padding: 0;
 }
 
+.thumbnail img {
+	width: 320px;
+	height: 150px;
+}
+
 .thumbnail .caption-full {
     padding: 9px;
     color: #333;
