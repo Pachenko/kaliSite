@@ -23,32 +23,15 @@
             </div>
         </div>
     </nav>
-        </div>
-    </div>
+		<div class="container-fluid breadcrumbBox text-center">
+			<ol class="breadcrumb">
+				<li class="{% block statutCommande %}{% endblock %}"><a href="{{ path('panier.index') }}">Commande</a></li>
+				<li class="{% block statutAchat %}{% endblock %}"><a href="{{ path('panier.achat') }}">Achat</a></li>
+			</ol>
+		</div>
 		<div class="container text-center">
-
-			<div class="col-md-5 col-sm-12">
-				<div class="bigcart"></div>
-				<h1>Votre panier</h1>
-				<p>
-					Nombre d'article : 
-				</p>
-			</div>
-			
-			<div class="col-md-7 col-sm-12 text-left">
-				<ul>
-					<li class="row list-inline columnCaptions">
-						<span>QTE</span>
-						<span>Produits</span>
-						<span>Prix</span>
-					</li>
-					{% block commandes %}{% endblock %}
-					<li class="row totals">
-						{% block total %}{% endblock %}
-					</li>
-				</ul>
-			</div>
-
+			{% block quantite %}{% endblock %}
+			{% block commandes %}{% endblock %}
 		</div>
 		{% block edit %}{% endblock %}
     <script src="{{ asset('js/jquery.js') }}"></script>

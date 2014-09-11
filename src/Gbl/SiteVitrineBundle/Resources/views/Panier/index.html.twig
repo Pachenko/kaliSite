@@ -1,20 +1,38 @@
 {% extends '::panier.html.twig' %}
 
+{% block quantite %}
+	<div class="col-md-5 col-sm-12">
+		<div class="bigcart"></div>
+		<h1>Votre panier</h1>
+		<p>
+			Nombre d'article : <span class="article">{{ quantite }}</span>
+		</p>
+	</div>
+{% endblock %}
+
 {% block commandes %}
+	<div class="col-md-7 col-sm-12 text-left">
+		<ul>
+			<li class="row list-inline columnCaptions">
+				<span>QTE</span>
+				<span>Produits</span>
+				<span>Prix</span>
+			</li>
 	{% for produit in commande %}
 		<li class="row">
 			<span class="quantity">1</span>
 			<span class="itemName">{{ produit.nom }}</span>
 			<span class="popbtn"><a class="arrow"></a></span>
-			<span class="price">{{ produit.prix }} euros</span>
+			<span class="price">{{ produit.prix }}euros</span>
 		</li>
 	{% endfor %}
-{% endblock %}
-
-{% block total %}
-	<span class="itemName">Total:</span>
-	<span class="price"> euros</span>
-	<span class="order"> <a class="text-center">Acheter</a></span>
+			<li class="row totals">
+				<span class="itemName">Total:</span>
+				<span class="price">{{ total }} euros</span>
+				<span class="order"><a href="{{ path('panier.achat') }}" class="text-center">Acheter</a></span>
+			</li>
+		</ul>
+	</div>
 {% endblock %}
 
 {% block edit %}
@@ -23,3 +41,5 @@
 	<a href=""><span class="glyphicon glyphicon-remove"></span></a>
 </div>
 {% endblock %}
+
+{% block statutCommande %}active{% endblock %}
