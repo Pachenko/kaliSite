@@ -17,26 +17,24 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">Accueil</a>
+                        <a href="{{ path('site.index') }}">Accueil</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-		<div class="container-fluid breadcrumbBox text-center">
-			<ol class="breadcrumb">
-				<li class="{% block statutCommande %}{% endblock %}"><a href="{{ path('panier.index') }}">Commande</a></li>
-				<li class="{% block statutAchat %}{% endblock %}"><a href="{{ path('panier.achat') }}">Achat</a></li>
-			</ol>
-		</div>
+    {% block breadcrumb %}{% endblock %}
 		<div class="container text-center">
+			{% block details %}{% endblock %}
 			{% block quantite %}{% endblock %}
-			{% block commandes %}{% endblock %}
-		</div>
+			{% block commandes %}{% endblock %}			
+		</div>	
+		{% block achat %}{% endblock %}	
 		{% block edit %}{% endblock %}
     <script src="{{ asset('js/jquery.js') }}"></script>
 	<script src="{{ asset('js/bootstrap.min.js') }}"></script> 
 	<script src="{{ asset('js/panier.js') }}"></script> 
+	<script src="{{ asset('js/customjs.js') }}"></script> 
 	{% block javascripts %}{% endblock %}
   </body>
 </html>

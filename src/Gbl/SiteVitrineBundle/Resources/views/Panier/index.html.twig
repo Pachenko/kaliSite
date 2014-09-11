@@ -1,5 +1,14 @@
 {% extends '::panier.html.twig' %}
 
+{% block breadcrumb %}
+	<div class="container-fluid breadcrumbBox text-center">
+		<ol class="breadcrumb">
+			<li class="active"><a href="{{ path('panier.index') }}">Commande</a></li>
+			<li><a href="{{ path('panier.achat') }}">Achat</a></li>
+		</ol>
+	</div>
+{% endblock %}
+
 {% block quantite %}
 	<div class="col-md-5 col-sm-12">
 		<div class="bigcart"></div>
@@ -41,5 +50,3 @@
 	<a href=""><span class="glyphicon glyphicon-remove"></span></a>
 </div>
 {% endblock %}
-
-{% block statutCommande %}active{% endblock %}
