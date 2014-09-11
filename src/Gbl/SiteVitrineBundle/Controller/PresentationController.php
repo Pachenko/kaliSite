@@ -9,11 +9,13 @@ use Buzz\Browser;
 use Ivory\GoogleMapBundle\IvoryGoogleMapBundle;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\MapTypeId;
+use Ivory\GoogleMap\Overlays\Marker;
+use Ivory\GoogleMap\Overlays\MarkerShape;
 
 class PresentationController extends Controller
 {
 	/**
-	 * @Route("/presentation", name="presentation.index")
+	 * @Route("/presentation", name="site.presentation")
 	 */
 	public function indexAction()
 	{
@@ -61,27 +63,11 @@ class PresentationController extends Controller
     	////////////////////////////////
     	
     	$map = new Map();
+    	$marker = new Marker();
+    	$markerShape = new MarkerShape();
     	
-    	$map->setPrefixJavascriptVariable('map_');
-    	$map->setHtmlContainerId('map_canvas');
-    	
-    	$map->setAsync(false);
-    	$map->setAutoZoom(false);
-    	
-    	$map->setCenter(0, 0, true);
-    	$map->setMapOption('zoom', 3);
-    	
-    	$map->setBound(-2.1, -3.9, 2.6, 1.4, true, true);
-    	
-    	$map->setMapOption('mapTypeId', MapTypeId::ROADMAP);
-    	$map->setMapOption('mapTypeId', 'roadmap');
-    	
-    	$map->setMapOption('disableDefaultUI', true);
-    	$map->setMapOption('disableDoubleClickZoom', true);
-    	$map->setMapOptions(array(
-    			'disableDefaultUI'       => true,
-    			'disableDoubleClickZoom' => false,
-    	));
+    	$map->setMapOption('zoom', 19);
+    	$map->setCenter(48.8485578, 2.3885041, true);
     	
     	$map->setStylesheetOption('width', '400px');
     	$map->setStylesheetOption('height', '400px');
@@ -91,10 +77,6 @@ class PresentationController extends Controller
     	));
     	
     	$map->setLanguage('fr');
-    	
-    	//$map = $this->get('ivory_google_map.map');
-    	
-    	//var_dump($map);die();
     	
     	return $this->render('GblSiteVitrineBundle:Presentation:index.html.twig', array(
     			'theme' 	 => $infoTheme,

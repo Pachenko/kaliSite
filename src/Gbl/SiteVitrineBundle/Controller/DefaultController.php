@@ -11,8 +11,7 @@ use Buzz\Browser;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
-     * @Route("/index")
+     * @Route("/", name="site.index")
      */
     public function indexAction()
     {
