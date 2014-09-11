@@ -54,9 +54,12 @@ class DefaultController extends Controller
     		throw new NotFoundHttpException(sprintf('Catégories introuvable'));
     	}
     	
+    	$panier = $this->get('session')->get('panier');
+    	    	
     	return $this->render('GblSiteVitrineBundle:Default:index.html.twig', array(
     			'theme' 	 => $infoTheme,
-    			'categories' => $infoCat
+    			'categories' => $infoCat,
+    			'panier'	 => $panier,
     	));
     }
     

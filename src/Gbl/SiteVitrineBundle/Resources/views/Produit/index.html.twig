@@ -41,13 +41,14 @@
 			</li>
 			<li class="row">
 				<span class="price">
-					{{ produit.prix }} euros
+					{{ produit.prix }} Euros
 				</span>
 			</li>
 			<li class="row totals">
+			<span class="itemName"></span>
 				<span class="order">
 					<a href="{{ path('panier.index') }}" class="text-center" id="achatProduit">Acheter</a>
-					 <input type="hidden" class="reference" value="{{ produit.reference }}"/>
+					<input type="hidden" class="reference" value="{{ produit.reference }}"/>
 				</span>
 			</li>
 		</ul>

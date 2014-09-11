@@ -1,0 +1,17 @@
+{% extends '::panier.html.twig' %}
+
+{% block breadcrumb %}
+	<div class="container-fluid breadcrumbBox text-center">
+		<ol class="breadcrumb">
+			<li><a href="{{ path('panier.index') }}">Commande</a></li>
+			<li><a href="{{ path('panier.achat') }}">Achat</a></li>
+			<li class="active"><a href="{{ path('panier.confirm') }}">Confirm</a></li>
+		</ol>
+	</div>
+{% endblock %}
+
+{% block confirm %}
+ <h4>Commande envoyee</h4>
+ <hr>
+<p class="bg-primary">https://labanque.com/index.php?prix={{ prix }}&poids={{ poids }}&transporteur={{ transporteur|trim(' ') }}&date={{ "now"|date("m/d/Y") }}	</p>
+{% endblock %}	

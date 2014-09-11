@@ -5,6 +5,7 @@
 		<ol class="breadcrumb">
 			<li class="active"><a href="{{ path('panier.index') }}">Commande</a></li>
 			<li><a href="{{ path('panier.achat') }}">Achat</a></li>
+			<li><a href="{{ path('panier.confirm') }}">Confirm</a></li>
 		</ol>
 	</div>
 {% endblock %}
@@ -29,10 +30,10 @@
 			</li>
 	{% for produit in commande %}
 		<li class="row">
-			<span class="quantity">1</span>
+			<span class="quantity">{{ produit.quantite }}</span>
 			<span class="itemName">{{ produit.nom }}</span>
 			<span class="popbtn"><a class="arrow"></a></span>
-			<span class="price">{{ produit.prix }}euros</span>
+			<span class="price">{{ produit.prix }} euros</span>
 		</li>
 	{% endfor %}
 			<li class="row totals">

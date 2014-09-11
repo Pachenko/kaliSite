@@ -21,12 +21,13 @@ class PanierController extends Controller
 		$total     = 0;
 		$quantite  = 0;
 		
-		foreach ($commandes as $reference => $produit) {
-			$total += $produit['prix'];
+		if (isset($commandes)) { 
+			foreach ($commandes as $reference => $produit) {
+				$total += $produit['prix'];
+			}
 		}
-		
 		$quantite = count($commandes);
-		
+
 		return array(
 			'commande' => $commandes,
 			'total'    => $total,	
@@ -42,18 +43,88 @@ class PanierController extends Controller
 	 */
 	public function achatAction()
 	{
+		$commandes 		   = $this->get('session')->get('commandes');
+		$user			   = $this->container->get('security.context')
+								   			 ->getToken()
+											 ->getUser();
+		$quantiteProduits  = 0;
+		$poidsTotal		   = 0;
+		$prixTotal		   = 0;
+		$prix			   = 0;
+		$ecotaxe		   = 0.52;
+		$transporteurs	   = [];
+		$transporteur	   = '';
+		$temp			   = [];
+		$dimensionTotal	   = 0;
 		
-		return array();
+		if (isset($commandes)) {
+			foreach ($commandes as $reference => $produit) {
+				$quantiteProduits += $produit['quantite'];
+				$poidsTotal 	  += $produit['poids'] * $produit['quantite'];
+				$prixTotal		  += $produit['prix']  * $produit['quantite'];
+				$prix			  += $produit['prix']  * $produit['quantite'];
+				$dimensionTotal   += $produit['dimensions'] * $produit['quantite'];
+			}
+		}
+		
+		$ecotaxe   *= $poidsTotal;
+		$prixTotal += $ecotaxe;
+		
+		$browser 	   = new Browser();
+		$reponse 	   = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/transporteurs');
+		$transporteurs = json_decode($reponse->getContent(), true);
+		
+		
+		if (isset($transporteurs)) {
+			foreach ($transporteurs as $k => $nom) {
+				$temp[] = $nom['nom'];
+			}
+		}
+		
+		$transporteur = ($poidsTotal >= 1.5 && $dimensionTotal > 60) ? $temp[0] : $temp[1];
+		
+		$session = $this->get('session');
+		$session->set('prix', $prixTotal);
+		$session->set('transporteur', $transporteur);
+		$session->set('poids', $poidsTotal);
+		
+		return array(
+			'commandes' 	  => $commandes,
+			'quantiteProduit' => $quantiteProduits,	
+			'poidsTotal'	  => $poidsTotal,
+			'ecotaxe'		  => $ecotaxe,
+			'prixTotal'		  => $prixTotal,	
+			'prix'			  => $prix,
+			'transporteur'	  => $transporteur,	
+			'user'			  => $user,
+		);
 	}
 	
 	/**
 	 * Permet de supprimer un produit de la commande
 	 * 
-	 * @Route("/panier/delete", name="panier.delete")
+	 * @Route("/panier/confirm", name="panier.confirm")
+	 * @Template();
 	 */
-	public function deleteAction(Request $request) 
+	public function confirmAction(Request $request) 
 	{
-			
+		$session	  = $this->get('session');
+		$commandes    = $session->get('commandes');
+		$prix	      = $session->get('prix');
+		$transporteur = $session->get('transporteur');
+		$poids 		  = $session->get('poids');
+		
+		/* On met à jour les stocks des produits */
+		
+		
+		/* On vide la session, la commande est confirmée */
+		$session->remove('commandes');
+		
+		return array(
+			'prix'	       => $prix,
+			'transporteur' => $transporteur,
+			'poids'	       => $poids,
+		);
 	}
 	
 	/**
@@ -86,6 +157,7 @@ class PanierController extends Controller
 		
 		/* Ajout de la commande dans la session */
 		$this->get('session')->set('commandes', $commandes);
+		$this->get('session')->set('panier', count($commandes));
 		
 		/* Retour ajax */
 		$jsonRetour->setData(array(

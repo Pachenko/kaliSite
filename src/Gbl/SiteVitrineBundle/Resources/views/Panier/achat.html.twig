@@ -4,6 +4,7 @@
 		<ol class="breadcrumb">
 			<li><a href="{{ path('panier.index') }}">Commande</a></li>
 			<li class="active"><a href="{{ path('panier.achat') }}">Achat</a></li>
+			<li><a href="{{ path('panier.confirm') }}">Confirm</a></li>
 		</ol>
 	</div>
 {% endblock %}
@@ -18,16 +19,50 @@
   				<th>Nom Produit</th>
   				<th>Prix</th>
   				<th>Ecotaxe</th>
-  				<th>Total</th>
+  				<th>Quantite</th>
+  				<th>Poids</th>
   			</tr>
   		</thead>
   		<tbody>
+  		{% for commande in commandes %}
   			<tr>
-  				<th></th>	
+  				<th>{{ commande.nom }}</th>	
+  				<th>{{ commande.prix }} Euros</th>	
+  				<th>0.52 Euros</th>	
+  				<th>{{ commande.quantite }}</th>
+  				<th>{{ commande.poids }} Kg</th>	
   			</tr>
+  		{% endfor %}
   		</tbody>
+  		<tfoot>
+  			<tr>
+  				<th>Total : </th>
+  				<th>{{ prix }} Euros</th>
+  				<th>{{ ecotaxe }} Euros</th>
+  				<th>{{ quantiteProduit }}</th>
+  				<th>{{ poidsTotal }} Kg</th>
+  			</tr>
+  		</tfoot>
 	</table>
+	<hr>
+	<table class="table table-condensed">
+		<thead>
+			<tr>
+				<th>Transporteur</th>
+				<th>Votre Adresse</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>{{ transporteur }}</th>
+				{% if user.getAdresse is defined and user is not null%}
+				<th>{{ user.getAdresse }}</th>
+				{% endif %}
+			</tr>
+		</tbody>
+	</table>
+	<hr>
 	<div class="col-md-5 col-sm-12">
-		<span class="order"><a href="{{ path('panier.achat') }}" class="text-center" id="confirmationCommande">Confirmer</a></span>
+		<span class="order"><a href="{{ path('panier.confirm') }}" class="text-center" id="confirmationCommande">Confirmer</a></span>
 	</div>
 {% endblock %}

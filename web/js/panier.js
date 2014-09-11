@@ -26,7 +26,7 @@ jQuery(document).ready(function($) {
 			dataType: "json"
 		}).done(function(data) {
 			if (data.ajax === 'ok') {
-				
+				$(location).attr('href', '../panier');
 			}
 		});
 		return false;

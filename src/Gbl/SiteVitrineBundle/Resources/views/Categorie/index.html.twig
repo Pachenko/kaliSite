@@ -1,6 +1,7 @@
 {% extends '::produits.html.twig' %}
 
 {% block produits %}
+{% if produits is defined%}
 	{% for produit in produits %}
 	<div class="col-sm-4 col-lg-4 col-md-4">
 		<div class="thumbnail">
@@ -17,12 +18,13 @@
 		</div>
 	</div>
 	{% endfor %}
+{% endif %}
 {% endblock %}
 
 {% block categories %}
-	{% for categorie in categories %}
-		<a href="{{ categorie.id }}" class="list-group-item">{{ categorie.nom }}</a>
-	{% endfor %}
+		{% for categorie in categories %}
+			<a href="{{ categorie.id }}" class="list-group-item">{{ categorie.nom }}</a>
+		{% endfor %}
 {% endblock %}
 
                          
