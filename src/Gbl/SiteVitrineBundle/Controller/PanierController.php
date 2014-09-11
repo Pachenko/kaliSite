@@ -50,6 +50,5 @@ class PanierController extends Controller
 		));
 		
 		return $jsonRetour;
-		
 	}
 }
