@@ -20,6 +20,7 @@ class AppKernel extends Kernel
         	new FOS\UserBundle\FOSUserBundle(),
         	new Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
         	new Bmatzner\FontAwesomeBundle\BmatznerFontAwesomeBundle(),
+        	new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
