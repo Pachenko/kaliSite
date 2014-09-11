@@ -16,7 +16,10 @@ class RegistrationFormType extends AbstractType
 		$builder->add('codepostal');
 		$builder->add('ville');
 		$builder->add('pays');
-		$builder->add('date_naissance', 'date');
+		$builder->add('date_naissance', 'date', array(
+            'format' => 'dd-MMMM-yyyy',
+            'years' =>  range(\date("Y") - 0, \date("Y") - 100),
+        ));
 		$builder->add('telephone_fixe');
 		$builder->add('telephone_portable');
 
