@@ -17,15 +17,32 @@ class PanierController extends Controller
 	 */
 	public function indexAction()
 	{
-		/* Récupération de la commande */
 		$commandes = $this->get('session')->get('commandes');
 		$total     = 0;
+		$quantite  = 0;
 		
 		foreach ($commandes as $reference => $produit) {
 			$total += $produit['prix'];
 		}
-		var_dump($total); die();
-		return array('commande' => $commandes);
+		
+		$quantite = count($commandes);
+		
+		return array(
+			'commande' => $commandes,
+			'total'    => $total,	
+			'quantite' => $quantite,
+		);
+	}
+	
+	/**
+	 * Permet de payer
+	 * 
+	 * @Route("/panier/achat", name="panier.achat")
+	 * @Template();
+	 */
+	public function achatAction()
+	{
+		return array();
 	}
 	
 	/**

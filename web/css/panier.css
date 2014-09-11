@@ -71,6 +71,10 @@ a:hover {
 	padding: 0 32px;
 }
 
+.container-fluid {
+	margin-top: 50px;
+}
+
 /*-----------------------------------  
 	Logo and description 
 ----------------------------------- */
@@ -197,6 +201,11 @@ a:hover {
 	float: right;
 }
 
+.article {
+	color: #f06953;
+	font-size :18px;
+	font-weight: bold;
+}
 
 /* Totals */
 
