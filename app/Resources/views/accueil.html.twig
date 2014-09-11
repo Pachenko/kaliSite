@@ -52,7 +52,7 @@
         		</div>
         		<div class="navbar-collapse collapse">
           			<ul class="nav navbar-nav">
-						<li class="active"><a href="{{ path('site.index') }}">Home</a></li>
+						<li><a href="{{ path('site.index') }}">Home</a></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Boutique <span class="caret"></span></a>
               				<ul class="dropdown-menu" role="menu">
               				{% for cat in categories %}
@@ -60,7 +60,9 @@
 							{% endfor %}
 							</ul>
             			</li>
-						<li><a href="#contact">Vente privée</a></li>
+						<li><a href="{{ path('site.top10') }}">Top 10</a></li>
+						<li><a href="{{ path('site.flash') }}">Vente privée</a></li>
+						<li><a href="{{ path('site.presentation') }}">Qui sommes-nous?</a></li>
           			</ul>
           			<ul class="nav navbar-nav navbar-right">
 						<li><a href="{{ path('fos_user_registration_register') }}">Inscription</a></li>
@@ -142,10 +144,12 @@
 		<div class="col-md-3">
 			<img class="featurette-image img-responsive" heigth="300px" width="300px" src="{{ asset('img/vente.png')}}" alt="image" />
 		</div>
+		<a class="no-blue" href="{{ path('site.flash') }}">
 		<div class="col-md-9">
 			<h2 class="featurette-heading"><span class="text-muted">Vente privée</span></h2>
 			<p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
 		</div>
+		</a>
 	</div>
 
 	<hr class="featurette-divider">

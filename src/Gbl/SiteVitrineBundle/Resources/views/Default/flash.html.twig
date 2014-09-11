@@ -1,7 +1,7 @@
 {% extends '::base.html.twig' %}
 
 {% block title %}
-Top 10 produits phares ! - {{ theme.titre }}
+Vente privée - {{ theme.titre }}
 {% endblock %}
 
 {% block logo %}
@@ -35,7 +35,7 @@ http://127.0.0.1/kaliBackOffice/web/uploads/themes/{{ theme.logo }}
 		<strong>Stock : </strong>{{ p.stock }}<br />
 		<strong>Description : </strong>{{ p.description }}<br />
 		</p>
-		<p class="lead">
+		<p>
 		<button type="button" class="btn btn-primary">Ajouter au panier</button>
 		</p>
 	</div>

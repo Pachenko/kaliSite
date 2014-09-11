@@ -61,7 +61,9 @@
 							{% endfor %}
 							</ul>
             			</li>
-						<li><a href="#contact">Vente privée</a></li>
+            			<li><a href="{{ path('site.top10') }}">Top 10</a></li>
+						<li><a href="{{ path('site.flash') }}">Vente privée</a></li>
+						<li><a href="{{ path('site.presentation') }}">Qui sommes-nous?</a></li>
           			</ul>
           			<ul class="nav navbar-nav navbar-right">
 						<li><a href="{{ path('fos_user_registration_register') }}">Inscription</a></li>
@@ -84,8 +86,6 @@
 	<hr class="featurette-divider">
 
 {% block contenu %}{% endblock %}
-
-	<hr class="featurette-divider">
 
 <!-- /END THE FEATURETTES -->
 
