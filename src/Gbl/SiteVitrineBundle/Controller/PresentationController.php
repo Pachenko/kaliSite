@@ -80,7 +80,7 @@ class PresentationController extends Controller
     	$map->setMapOption('disableDoubleClickZoom', true);
     	$map->setMapOptions(array(
     			'disableDefaultUI'       => true,
-    			'disableDoubleClickZoom' => true,
+    			'disableDoubleClickZoom' => false,
     	));
     	
     	$map->setStylesheetOption('width', '400px');
