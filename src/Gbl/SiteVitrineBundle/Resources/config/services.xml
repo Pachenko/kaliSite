@@ -7,6 +7,9 @@
 		<service id="gbl_user.my_provider" class="Gbl\SiteVitrineBundle\Security\Provider\MyProvider" public="false">
 		    <argument type="service" id="fos_user.user_manager" />
 		</service>
+		<service id="gbl_user.registration.form.type" class="Gbl\SiteVitrineBundle\Form\Type\RegistrationFormType">
+            <tag name="form.type" alias="gbl_user_registration" />
+        </service>
 	</services>
 </container>
 
