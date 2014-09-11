@@ -1,1 +1,25 @@
-panier
+{% extends '::panier.html.twig' %}
+
+{% block commandes %}
+	{% for produit in commande %}
+		<li class="row">
+			<span class="quantity">1</span>
+			<span class="itemName">{{ produit.nom }}</span>
+			<span class="popbtn"><a class="arrow"></a></span>
+			<span class="price">{{ produit.prix }} euros</span>
+		</li>
+	{% endfor %}
+{% endblock %}
+
+{% block total %}
+	<span class="itemName">Total:</span>
+	<span class="price"> euros</span>
+	<span class="order"> <a class="text-center">Acheter</a></span>
+{% endblock %}
+
+{% block edit %}
+<div id="popover" style="display: none">
+	<a href=""><span class="glyphicon glyphicon-pencil"></span></a>
+	<a href=""><span class="glyphicon glyphicon-remove"></span></a>
+</div>
+{% endblock %}

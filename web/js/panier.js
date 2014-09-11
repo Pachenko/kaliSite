@@ -11,7 +11,9 @@ jQuery(document).ready(function($) {
 			data: {ref : $reference},
 			dataType: "json"
 		}).done(function(data) {
-			// l'action retour TO DO
+			if (data.ajax === 'ok') {
+				
+			}
 		});
 		return false;
 	});

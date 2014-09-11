@@ -13,10 +13,19 @@ class PanierController extends Controller
 {
 	/**
 	 * @Route("/panier", name="panier.index")
+	 * @Template
 	 */
-	public function indexAction(Request $request)
+	public function indexAction()
 	{
-
+		/* Récupération de la commande */
+		$commandes = $this->get('session')->get('commandes');
+		$total     = 0;
+		
+		foreach ($commandes as $reference => $produit) {
+			$total += $produit['prix'];
+		}
+		var_dump($total); die();
+		return array('commande' => $commandes);
 	}
 	
 	/**

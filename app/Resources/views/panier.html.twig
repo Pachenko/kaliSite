@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{% block title %}{% endblock %}</title>
+	<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+	<link href="{{ asset('css/panier.css') }}" rel="stylesheet" media="screen">
+	<script src="{{ asset('js/ie-emulation-modes-warning.js') }}"></script> 
+	{% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Panier</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">Accueil</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+        </div>
+    </div>
+		<div class="container text-center">
+
+			<div class="col-md-5 col-sm-12">
+				<div class="bigcart"></div>
+				<h1>Votre panier</h1>
+				<p>
+					Nombre d'article : 
+				</p>
+			</div>
+			
+			<div class="col-md-7 col-sm-12 text-left">
+				<ul>
+					<li class="row list-inline columnCaptions">
+						<span>QTE</span>
+						<span>Produits</span>
+						<span>Prix</span>
+					</li>
+					{% block commandes %}{% endblock %}
+					<li class="row totals">
+						{% block total %}{% endblock %}
+					</li>
+				</ul>
+			</div>
+
+		</div>
+		{% block edit %}{% endblock %}
+    <script src="{{ asset('js/jquery.js') }}"></script>
+	<script src="{{ asset('js/bootstrap.min.js') }}"></script> 
+	<script src="{{ asset('js/panier.js') }}"></script> 
+	{% block javascripts %}{% endblock %}
+  </body>
+</html>
