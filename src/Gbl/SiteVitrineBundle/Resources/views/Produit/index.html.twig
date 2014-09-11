@@ -1,2 +1,55 @@
-{% extends '::produits.html.twig' %}
+{% extends '::panier.html.twig' %}
 
+{% block quantite %}
+	<div class="col-md-5 col-sm-12">
+		<img src="http://localhost/kaliBackOffice/web/uploads/{{ produit.file_img }}" alt="" class="produit">
+		<h1>{{ produit.nom }}</h1>
+		<p>
+			<span class="article">{{ produit.description }}</span>
+		</p>
+	</div>
+{% endblock %}
+
+{% block commandes %}
+	<div class="col-md-7 col-sm-12 text-left">
+		<ul>
+			<li class="row">
+				<span class="itemName">
+				<span class="descriptionProduit">Nom : </span>
+					{{ produit.nom }}
+				</span>
+			</li>
+			<li class="row">
+				<span class="itemName">
+					<span class="descriptionProduit">Reference : </span>
+					{{ produit.reference }}
+				</span>
+			</li>
+			<li class="row">
+				<span class="itemName"><span class="descriptionProduit">Stock : </span> 
+					{{ produit.stock }}
+				</span>
+			</li>
+			<li class="row">
+				<span class="itemName">
+					<span class="descriptionProduit">Quantite : 
+						<a href="#" onclick="panier.quantite(1, {{ produit.stock }}); return false">+</a>
+							<input type="text" name="quantite" value="1" disabled="disabled" class="quantite"/>
+						<a href="#" onclick="panier.quantite(-1, 10); return false">-</a>
+					</span>
+				</span>
+			</li>
+			<li class="row">
+				<span class="price">
+					{{ produit.prix }} euros
+				</span>
+			</li>
+			<li class="row totals">
+				<span class="order">
+					<a href="{{ path('panier.index') }}" class="text-center" id="achatProduit">Acheter</a>
+					 <input type="hidden" class="reference" value="{{ produit.reference }}"/>
+				</span>
+			</li>
+		</ul>
+	</div>
+{% endblock %}
