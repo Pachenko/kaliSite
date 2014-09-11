@@ -1,2 +1,47 @@
+{% extends '::base.html.twig' %}
 
+{% block title %}
+Qui sommes-nous? - {{ theme.titre }}
+{% endblock %}
 
+{% block logo %}
+http://127.0.0.1/kaliBackOffice/web/uploads/themes/{{ theme.logo }}
+{% endblock %}
+
+{% block slogan %}
+{{ theme.slogan }}
+{% endblock %}
+
+{% block title2 %}
+{{ theme.titre }}
+{% endblock %}
+
+{% block contenu %}
+<div class="row featurette">
+	<div class="col-md-12">
+		<h2 class="featurette-heading"><span class="text-muted">Qui Sommes-nous?</span></h2><br />
+		<img class="featurette-image img-responsive" width="250px" heigth="100px" src="http://127.0.0.1/kaliBackOffice/web/uploads/themes/{{ theme.logo }}" alt="image" />
+		
+		<p class="lead">
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi cursus urna nunc. Nullam fermentum velit in gravida euismod. Donec viverra cursus neque, egestas consectetur orci porta gravida. Nunc quis velit vehicula, sagittis magna sed, vulputate odio. Cras vel sem justo. Vivamus imperdiet lacinia nisl id condimentum. Nullam varius porta tellus vitae ultrices. Ut vitae rhoncus dui. Vivamus eu urna mollis, rutrum augue vitae, blandit dui.
+		</p>
+		<p class="lead">Integer sodales gravida ante et finibus. Integer rutrum augue id congue consequat. Phasellus lacinia ultricies faucibus. Nulla rhoncus luctus arcu, eu porta orci rhoncus ut. Phasellus sit amet vestibulum ante, ut efficitur enim. Mauris luctus eu lorem ac varius. Sed dignissim massa vitae velit semper laoreet. Integer placerat at elit vel luctus. Vivamus sit amet erat ut nisi maximus lacinia quis at quam. Duis hendrerit enim in dolor sodales, ac pretium eros tempus.
+		</p>
+		<p class="lead">Etiam consequat, arcu quis pretium tempor, ligula mi semper sem, id commodo velit massa vel lorem. Fusce rhoncus sodales massa sit amet suscipit. Maecenas egestas magna a tortor sollicitudin, non pretium justo scelerisque. Maecenas nec leo eget magna aliquet malesuada. Donec semper eu quam quis porta. Sed rhoncus est purus, ultricies placerat nisl consequat sit amet. Fusce aliquet molestie dignissim. Nam bibendum id sapien at dapibus. Integer facilisis elit tempor velit facilisis vehicula. Sed suscipit efficitur fermentum. Mauris mattis lorem in fermentum congue. Phasellus non aliquet lorem. Cras malesuada consectetur enim quis auctor. Donec nec placerat neque.
+		</p>
+	</div>
+	
+	<div class="col-md-5">
+		<p class="lead">{{ google_map_container(map) }}
+{{ google_map_js(map) }}</p>
+	</div>
+	<div class="col-md-7">
+		<p class="lead"><br />
+		Kali.fr<br />
+		25 Rue Claude Tillier<br />
+		75012 Paris<br />
+		01 55 43 26 65
+		</p>
+	</div>
+</div>
+{% endblock %}
