@@ -22,7 +22,7 @@
 
 {% block categories %}
 	{% for categorie in categories %}
-		<a href="{{ categorie.nom }}" class="list-group-item">{{ categorie.nom }}</a>
+		<a href="{{ categorie.id }}" class="list-group-item">{{ categorie.nom }}</a>
 	{% endfor %}
 {% endblock %}
 
