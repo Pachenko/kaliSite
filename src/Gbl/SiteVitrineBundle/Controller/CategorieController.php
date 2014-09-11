@@ -21,7 +21,7 @@ class CategorieController extends Controller
 		
 		$productByCategorie = json_decode($produits->getContent(), true);
 		$categories 		= json_decode($categorie->getContent(), true);
-		
+		//var_dump($this->get('session')->get('commandes')); die();
 		return array(
 			'produits' 	 => $productByCategorie,
 			'categories' => $categories	
