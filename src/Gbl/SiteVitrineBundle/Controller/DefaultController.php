@@ -16,8 +16,12 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+    	//Création de l'API
     	$browser = new Browser();
-    	//API pour config
+    	
+    	////////////////////////////////
+    	//		API pour config		  //
+    	////////////////////////////////
     	$response = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/configurations/kaliSiteVitrine');   	
     	//Tableau des infos config
     	$infoConfig = json_decode($response->getContent(), true);  
@@ -25,15 +29,35 @@ class DefaultController extends Controller
     	if (array_key_exists(0, $infoConfig)) {
     		throw new NotFoundHttpException(sprintf('Configuration inconnue'));
     	}   	
-    	$id_theme = $infoConfig['theme'];
-    	
+    	$id_theme = $infoConfig['theme']['id'];
+
     	//Recherche info thème
     	$responseTheme = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/themes/'.$id_theme);
+    	
     	$infoTheme = json_decode($responseTheme->getContent(), true);
+    	
     	if (array_key_exists(0, $infoTheme)) {
     		throw new NotFoundHttpException(sprintf('Thème inconnue'));
     	}
     	
-    	return $this->render('GblSiteVitrineBundle:Default:index.html.twig', array('theme' => $infoTheme));
+    	////////////////////////////////
+    	//	  API pour catégories	  //
+    	////////////////////////////////
+    	
+    	$categories = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/categories');
+		
+		//Tableau des infos config
+    	$infoCat = json_decode($categories->getContent(), true);
+    	
+    	//var_dump($infoCat); die();
+    	 
+    	if (!$infoCat) {
+    		throw new NotFoundHttpException(sprintf('Catégories introuvable'));
+    	}
+    	
+    	return $this->render('GblSiteVitrineBundle:Default:index.html.twig', array(
+    			'theme' 	 => $infoTheme,
+    			'categories' => $infoCat
+    	));
     }
 }
