@@ -13,9 +13,16 @@ class RegistrationFormType extends AbstractType
 		$builder->add('nom');
 		$builder->add('prenom');
 		$builder->add('adresse');
+		$builder->add('codepostal');
+		$builder->add('ville');
+		$builder->add('pays');
 		$builder->add('date_naissance', 'date');
 		$builder->add('telephone_fixe');
 		$builder->add('telephone_portable');
+
+		$builder->add('Retour', 'button', array(
+				'attr' => array('onClick' => 'javascript:history.go(-1)'),
+		));
 	}
 
 	public function getParent()
