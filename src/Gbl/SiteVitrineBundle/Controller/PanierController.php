@@ -42,7 +42,18 @@ class PanierController extends Controller
 	 */
 	public function achatAction()
 	{
+		
 		return array();
+	}
+	
+	/**
+	 * Permet de supprimer un produit de la commande
+	 * 
+	 * @Route("/panier/delete", name="panier.delete")
+	 */
+	public function deleteAction(Request $request) 
+	{
+			
 	}
 	
 	/**
@@ -52,19 +63,25 @@ class PanierController extends Controller
 	 */
 	public function addAction(Request $request)
 	{
-		/* Récupération de la référence du produit */
+		/* Récupération de la référence du produit et sa quantite */
 		$reference  = $request->get('ref');
+		$quantite   = $request->get('qte');
 		$jsonRetour = new JsonResponse();
 		$ajax       = 'ko';
 		
 		/* Récupération du produit depuis le back */
-		$browser   = new Browser();
-		$reponse   = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/produits/' . $reference);
-		$produit   = json_decode($reponse->getContent(), true);
+		$browser = new Browser();
+		$reponse = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/produits/' . $reference);
+		$produit = json_decode($reponse->getContent(), true);
+
+		/* Ajout de la quatite pour un produit*/
+		$produit['quantite'] = intval($quantite);
 		
 		/* Récupération de la session */
 		$commandes = $this->get('session')->get('commandes');
-		if ($produit = $commandes[$produit['reference']])
+
+		/* Ajout du produit dans la commande */
+		if ($commandes[$produit['reference']] = $produit)
 			$ajax = 'ok';
 		
 		/* Ajout de la commande dans la session */
@@ -72,9 +89,9 @@ class PanierController extends Controller
 		
 		/* Retour ajax */
 		$jsonRetour->setData(array(
-			'reponse' => $ajax,
+			'ajax' => $ajax,
 		));
-		
+
 		return $jsonRetour;
 	}
 }
