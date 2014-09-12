@@ -10,7 +10,6 @@ var panier = {
 jQuery(document).ready(function($) {
 	$('a').on('click', '.glyphicon-remove', function() {
 		var $produit = $(this).parent().find('.reference');
-		alert('ok');
 		return false;
 	});
 	$('#achatProduit').on('click', function() {
@@ -26,8 +25,12 @@ jQuery(document).ready(function($) {
 			dataType: "json"
 		}).done(function(data) {
 			if (data.ajax === 'ok') {
-				$(location).attr('href', '../panier');
+				
 			}
+			(data.ajax === 'ok') ? 
+			$(location).attr('href', '../panier') :
+			alert('Vous devez vous connecter');
+			
 		});
 		return false;
 	});

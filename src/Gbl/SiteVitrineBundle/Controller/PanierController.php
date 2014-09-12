@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Buzz\Browser;
 
 class PanierController extends Controller
@@ -15,7 +16,6 @@ class PanierController extends Controller
 	 * 
 	 * 
 	 * @Route("/panier", name="panier.index")
-	 * @Template
 	 */
 	public function indexAction()
 	{
@@ -23,25 +23,41 @@ class PanierController extends Controller
 		$total     = 0;
 		$quantite  = 0;
 		
+		
 		if (isset($commandes)) { 
 			foreach ($commandes as $reference => $produit) {
-				$total += $produit['prix'];
+				$total += $produit['prix'] * $produit['quantite'];
 			}
 		}
 		$quantite = count($commandes);
-
-		return array(
-			'commande' => $commandes,
-			'total'    => $total,	
-			'quantite' => $quantite,
-		);
+		
+		////////////////////////////////
+		//	  API pour catégories	  //
+		////////////////////////////////
+		$browser = new Browser();
+		
+		$categories = $browser->get('http://back.kali.com/api/categories');
+		
+		//Tableau des infos config
+		$infoCat = json_decode($categories->getContent(), true);
+		
+		if (!$infoCat) {
+			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
+		}
+		
+		return $this->render('GblSiteVitrineBundle:Panier:index.html.twig', array(
+			'commande' 	 => $commandes,
+			'total'    	 => $total,	
+			'quantite' 	 => $quantite,
+			'categories' => $infoCat,
+		));
 	}
 	
 	/**
 	 * Permet de payer
 	 * 
 	 * @Route("/panier/achat", name="panier.achat")
-	 * @Template();
+	 * @Template()
 	 */
 	public function achatAction()
 	{
@@ -58,6 +74,9 @@ class PanierController extends Controller
 		$transporteur	   = '';
 		$temp			   = [];
 		$dimensionTotal	   = 0;
+		$statut 		   = 'ok';
+		$date			   = date('Y-m-d');
+		$referenceCommande = uniqid();
 		
 		if (isset($commandes)) {
 			foreach ($commandes as $reference => $produit) {
@@ -83,22 +102,41 @@ class PanierController extends Controller
 			}
 		}
 		
-		$transporteur = ($poidsTotal >= 1.5 && $dimensionTotal > 60) ? $temp[0] : $temp[1];
+		$transporteur = ($poidsTotal >= 1.5 && $dimensionTotal > 60) ? $temp[1] : $temp[0];
 		
 		$session = $this->get('session');
 		$session->set('prix', $prixTotal);
 		$session->set('transporteur', $transporteur);
 		$session->set('poids', $poidsTotal);
 		
+		////////////////////////////////
+		//	  API pour catégories	  //
+		////////////////////////////////
+		$browser = new Browser();
+		
+		$categories = $browser->get('http://back.kali.com/api/categories');
+		
+		//Tableau des infos config
+		$infoCat = json_decode($categories->getContent(), true);
+		
+		if (!$infoCat) {
+			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
+		}
+		
 		return array(
-			'commandes' 	  => $commandes,
-			'quantiteProduit' => $quantiteProduits,	
-			'poidsTotal'	  => $poidsTotal,
-			'ecotaxe'		  => $ecotaxe,
-			'prixTotal'		  => $prixTotal,	
-			'prix'			  => $prix,
-			'transporteur'	  => $transporteur,	
-			'user'			  => $user,
+			'commandes' 	    => $commandes,
+			'quantiteProduit'   => $quantiteProduits,	
+			'poidsTotal'	    => $poidsTotal,
+			'ecotaxe'		    => $ecotaxe,
+			'prixTotal'		    => $prixTotal,	
+			'prix'			    => $prix,
+			'transporteur'	    => $transporteur,	
+			'user'			    => $user,
+			'categories' 	    => $infoCat,
+			'referenceCommande' => $referenceCommande,
+			'statut'			=> $statut,
+			'date'				=> $date,
+			'reference'			=> $referenceCommande,
 		);
 	}
 	
@@ -106,15 +144,15 @@ class PanierController extends Controller
 	 * Permet de supprimer un produit de la commande
 	 * 
 	 * @Route("/panier/confirm", name="panier.confirm")
-	 * @Template();
+	 * @Template()
 	 */
 	public function confirmAction(Request $request) 
 	{
-		$session	  = $this->get('session');
-		$commandes    = $session->get('commandes');
-		$prix	      = $session->get('prix');
-		$transporteur = $session->get('transporteur');
-		$poids 		  = $session->get('poids');
+		$session	  	   = $this->get('session');
+		$commandes    	   = $session->get('commandes');
+		$prix	       	   = $session->get('prix');
+		$transporteur 	   = $session->get('transporteur');
+		$poids 		  	   = $session->get('poids');
 		
 		/* On met � jour les stocks des produits */
 		
@@ -122,10 +160,22 @@ class PanierController extends Controller
 		/* On vide la session, la commande est confirm�e */
 		$session->remove('commandes');
 		
+		$browser = new Browser();
+		
+		$categories = $browser->get('http://back.kali.com/api/categories');
+		
+		//Tableau des infos config
+		$infoCat = json_decode($categories->getContent(), true);
+		
+		if (!$infoCat) {
+			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
+		}
+		
 		return array(
-			'prix'	       => $prix,
-			'transporteur' => $transporteur,
-			'poids'	       => $poids,
+			'prix'	       		=> $prix,
+			'transporteur' 		=> $transporteur,
+			'poids'	       		=> $poids,
+			'categories'   		=> $infoCat,
 		);
 	}
 	
@@ -136,11 +186,16 @@ class PanierController extends Controller
 	 */
 	public function addAction(Request $request)
 	{
-		/* R�cup�ration de la r�f�rence du produit et sa quantite */
+		/* Recuperation de la reference du produit et sa quantite */
 		$reference  = $request->get('ref');
 		$quantite   = $request->get('qte');
 		$jsonRetour = new JsonResponse();
 		$ajax       = 'ko';
+		
+		/* Récupération de l'utilisateur */
+		$user= $this->container->get('security.context')
+					->getToken()
+					->getUser();
 		
 		/* R�cup�ration du produit depuis le back */
 		$browser = new Browser();
@@ -154,9 +209,11 @@ class PanierController extends Controller
 		$commandes = $this->get('session')->get('commandes');
 
 		/* Ajout du produit dans la commande */
-		if ($commandes[$produit['reference']] = $produit)
+		if ($user !== 'anon.') {
+			$commandes[$produit['reference']] = $produit;
 			$ajax = 'ok';
-		
+		}
+				
 		/* Ajout de la commande dans la session */
 		$this->get('session')->set('commandes', $commandes);
 		$this->get('session')->set('panier', count($commandes));

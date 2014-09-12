@@ -20,7 +20,7 @@ class MyProvider implements UserProviderInterface
 	public function loadUserByUsername($username)
 	{
 		$browser = new Browser();
-		$response = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/users/' . $username);
+		$response = $browser->get('http://back.kali.com/api/users/' . $username);
 		
 		//Tableau des infos d'user
 		$infoUser = json_decode($response->getContent(), true);
