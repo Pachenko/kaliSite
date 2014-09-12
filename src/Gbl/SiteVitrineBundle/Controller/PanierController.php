@@ -12,6 +12,8 @@ use Buzz\Browser;
 class PanierController extends Controller
 {
 	/**
+	 * 
+	 * 
 	 * @Route("/panier", name="panier.index")
 	 * @Template
 	 */
@@ -71,7 +73,7 @@ class PanierController extends Controller
 		$prixTotal += $ecotaxe;
 		
 		$browser 	   = new Browser();
-		$reponse 	   = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/transporteurs');
+		$reponse 	   = $browser->get('http://back.kali.com/api/transporteurs');
 		$transporteurs = json_decode($reponse->getContent(), true);
 		
 		
@@ -114,10 +116,10 @@ class PanierController extends Controller
 		$transporteur = $session->get('transporteur');
 		$poids 		  = $session->get('poids');
 		
-		/* On met à jour les stocks des produits */
+		/* On met ï¿½ jour les stocks des produits */
 		
 		
-		/* On vide la session, la commande est confirmée */
+		/* On vide la session, la commande est confirmï¿½e */
 		$session->remove('commandes');
 		
 		return array(
@@ -134,21 +136,21 @@ class PanierController extends Controller
 	 */
 	public function addAction(Request $request)
 	{
-		/* Récupération de la référence du produit et sa quantite */
+		/* Rï¿½cupï¿½ration de la rï¿½fï¿½rence du produit et sa quantite */
 		$reference  = $request->get('ref');
 		$quantite   = $request->get('qte');
 		$jsonRetour = new JsonResponse();
 		$ajax       = 'ko';
 		
-		/* Récupération du produit depuis le back */
+		/* Rï¿½cupï¿½ration du produit depuis le back */
 		$browser = new Browser();
-		$reponse = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/produits/' . $reference);
+		$reponse = $browser->get('http://back.kali.com/api/produits/' . $reference);
 		$produit = json_decode($reponse->getContent(), true);
 
 		/* Ajout de la quatite pour un produit*/
 		$produit['quantite'] = intval($quantite);
 		
-		/* Récupération de la session */
+		/* Rï¿½cupï¿½ration de la session */
 		$commandes = $this->get('session')->get('commandes');
 
 		/* Ajout du produit dans la commande */

@@ -5,7 +5,7 @@ Top 10 produits phares ! - {{ theme.titre }}
 {% endblock %}
 
 {% block logo %}
-http://127.0.0.1/kaliBackOffice/web/uploads/themes/{{ theme.logo }}
+http://back.kali.com/uploads/themes/{{ theme.logo }}
 {% endblock %}
 
 {% block slogan %}
@@ -22,7 +22,7 @@ http://127.0.0.1/kaliBackOffice/web/uploads/themes/{{ theme.logo }}
 <div class="row featurette">
 	<div class="col-md-6 text-center">
 		<h2 class="featurette-heading"><span class="text-muted">{{ p.nom }}</span></h2>
-		<img heigth="200px" width="200px" src="{{ asset('http://127.0.0.1/kaliBackOffice/web/uploads/' ~ p.file_img)}}" alt="{{ p.nom }}" />
+		<img heigth="200px" width="200px" src="{{ asset('http://back.kali.com/uploads/' ~ p.file_img)}}" alt="{{ p.nom }}" />
 		<p class="lead">
 		</p>
 	</div>
@@ -36,7 +36,7 @@ http://127.0.0.1/kaliBackOffice/web/uploads/themes/{{ theme.logo }}
 		<strong>Description : </strong>{{ p.description }}<br />
 		</p>
 		<p class="lead">
-		<button type="button" class="btn btn-primary">Ajouter au panier</button>
+		<a href="{{ path('produits.index', {'reference': p.reference}) }}"><button type="button" class="btn btn-primary">Détails</button></a>
 		</p>
 	</div>
 </div>

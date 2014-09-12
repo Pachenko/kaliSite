@@ -11,6 +11,8 @@ use Buzz\Browser;
 class DefaultController extends Controller
 {
     /**
+     * Page index du site
+     * 
      * @Route("/", name="site.index")
      */
     public function indexAction()
@@ -21,7 +23,7 @@ class DefaultController extends Controller
     	////////////////////////////////
     	//		API pour config		  //
     	////////////////////////////////
-    	$response = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/configurations/kaliSiteVitrine');   	
+    	$response = $browser->get('http://back.kali.com/api/configurations/kaliSiteVitrine');   	
     	//Tableau des infos config
     	$infoConfig = json_decode($response->getContent(), true);  
     	
@@ -31,7 +33,7 @@ class DefaultController extends Controller
     	$id_theme = $infoConfig['theme']['id'];
 
     	//Recherche info thème
-    	$responseTheme = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/themes/'.$id_theme);
+    	$responseTheme = $browser->get('http://back.kali.com/api/themes/'.$id_theme);
     	
     	$infoTheme = json_decode($responseTheme->getContent(), true);
     	
@@ -43,7 +45,7 @@ class DefaultController extends Controller
     	//	  API pour catégories	  //
     	////////////////////////////////
     	
-    	$categories = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/categories');
+    	$categories = $browser->get('http://back.kali.com/api/categories');
 		
 		//Tableau des infos config
     	$infoCat = json_decode($categories->getContent(), true);
@@ -64,6 +66,8 @@ class DefaultController extends Controller
     }
     
     /**
+     * Liste les 10 produits les plus vendus
+     * 
      * @Route("/top10", name="site.top10")
      */
     public function top10Action()
@@ -74,7 +78,7 @@ class DefaultController extends Controller
     	////////////////////////////////
     	//		API pour config		  //
     	////////////////////////////////
-    	$response = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/configurations/kaliSiteVitrine');
+    	$response = $browser->get('http://back.kali.com/api/configurations/kaliSiteVitrine');
     	//Tableau des infos config
     	$infoConfig = json_decode($response->getContent(), true);
     	 
@@ -84,7 +88,7 @@ class DefaultController extends Controller
     	$id_theme = $infoConfig['theme']['id'];
     	
     	//Recherche info thème
-    	$responseTheme = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/themes/'.$id_theme);
+    	$responseTheme = $browser->get('http://back.kali.com/api/themes/'.$id_theme);
     	 
     	$infoTheme = json_decode($responseTheme->getContent(), true);
     	 
@@ -96,7 +100,7 @@ class DefaultController extends Controller
     	//	  API pour catégories	  //
     	////////////////////////////////
     	 
-    	$categories = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/categories');
+    	$categories = $browser->get('http://back.kali.com/api/categories');
     	
     	//Tableau des infos config
     	$infoCat = json_decode($categories->getContent(), true);
@@ -111,7 +115,7 @@ class DefaultController extends Controller
     	//	API pour top 10 produits  //
     	////////////////////////////////
     	
-    	$produits = $browser->get('http://127.0.0.1/kaliBackOffice/web/app_dev.php/api/top10/produit');
+    	$produits = $browser->get('http://back.kali.com/api/top10/produit');
     	 
     	//Tableau des infos config
     	$infoProd = json_decode($produits->getContent(), true);
@@ -119,7 +123,7 @@ class DefaultController extends Controller
     	//var_dump($infoCat); die();
     	 
     	if (!$infoProd) {
-    		throw new NotFoundHttpException(sprintf('Catégories introuvable'));
+    		throw new NotFoundHttpException(sprintf('Produit top 10 introuvable'));
     	}
     	
     	//var_dump($infoProd);die();
@@ -133,6 +137,8 @@ class DefaultController extends Controller
     }
     
     /**
+     * Liste tous les produits qui sont en vente flash
+     * 
      * @Route("/flash", name="site.flash")
      */
     public function ventePriveeAction()
@@ -143,7 +149,7 @@ class DefaultController extends Controller
     	////////////////////////////////
     	//		API pour config		  //
     	////////////////////////////////
-    	$response = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/configurations/kaliSiteVitrine');
+    	$response = $browser->get('http://back.kali.com/api/configurations/kaliSiteVitrine');
     	//Tableau des infos config
     	$infoConfig = json_decode($response->getContent(), true);
     
@@ -153,7 +159,7 @@ class DefaultController extends Controller
     	$id_theme = $infoConfig['theme']['id'];
     	 
     	//Recherche info thème
-    	$responseTheme = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/themes/'.$id_theme);
+    	$responseTheme = $browser->get('http://back.kali.com/api/themes/'.$id_theme);
     
     	$infoTheme = json_decode($responseTheme->getContent(), true);
     
@@ -165,7 +171,7 @@ class DefaultController extends Controller
     	//	  API pour catégories	  //
     	////////////////////////////////
     
-    	$categories = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/categories');
+    	$categories = $browser->get('http://back.kali.com/api/categories');
     	 
     	//Tableau des infos config
     	$infoCat = json_decode($categories->getContent(), true);
@@ -180,7 +186,7 @@ class DefaultController extends Controller
     	//	API pour top 10 produits  //
     	////////////////////////////////
     	 
-    	$produits = $browser->get('http://127.0.0.1/kaliBackOffice/web/app_dev.php/api/vente/flash');
+    	$produits = $browser->get('http://back.kali.com/api/vente/flash');
     
     	//Tableau des infos config
     	$infoProd = json_decode($produits->getContent(), true);

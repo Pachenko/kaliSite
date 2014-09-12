@@ -25,7 +25,7 @@ class PresentationController extends Controller
     	////////////////////////////////
     	//		API pour config		  //
     	////////////////////////////////
-    	$response = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/configurations/kaliSiteVitrine');   	
+    	$response = $browser->get('http://back.kali.com/api/configurations/kaliSiteVitrine');   	
     	//Tableau des infos config
     	$infoConfig = json_decode($response->getContent(), true);  
     	
@@ -35,7 +35,7 @@ class PresentationController extends Controller
     	$id_theme = $infoConfig['theme']['id'];
 
     	//Recherche info thème
-    	$responseTheme = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/themes/'.$id_theme);
+    	$responseTheme = $browser->get('http://back.kali.com/api/themes/'.$id_theme);
     	
     	$infoTheme = json_decode($responseTheme->getContent(), true);
     	
@@ -47,7 +47,7 @@ class PresentationController extends Controller
     	//	  API pour catégories	  //
     	////////////////////////////////
     	
-    	$categories = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/categories');
+    	$categories = $browser->get('http://back.kali.com/api/categories');
 		
 		//Tableau des infos config
     	$infoCat = json_decode($categories->getContent(), true);

@@ -16,7 +16,7 @@ class ProduitController extends Controller
 	public function indexAction($reference)
 	{
 		$browser   = new Browser();
-		$produits  = $browser->get('http://localhost/kaliBackOffice/web/app_dev.php/api/produits/' . $reference);
+		$produits  = $browser->get('http://back.kali.com/api/produits/' . $reference);
 		
 		$produit = json_decode($produits->getContent(), true);
 		
