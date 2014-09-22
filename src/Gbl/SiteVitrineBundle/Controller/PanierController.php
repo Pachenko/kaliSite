@@ -20,11 +20,18 @@ class PanierController extends Controller
 	protected $_session = null;
 	
 	/**
-	 * méthode file_get_content()
+	 * Méthode file_get_content()
 	 *
 	 * @var Buzz\Browser
 	 */
 	protected $_browser = null;
+	
+	/**
+	 * Ecotaxe initialisation
+	 * 
+	 * @var double
+	 */
+	protected $_ecotaxe = 0.52;
 	
 	/**
 	 * Permet d'initialiser les données réutilisables
@@ -93,7 +100,7 @@ class PanierController extends Controller
 		$poidsTotal		   = 0;
 		$prixTotal		   = 0;
 		$prix			   = 0;
-		$ecotaxe		   = 0.52;
+		$ecotaxe		   = $this->_ecotaxe;
 		$transporteurs	   = [];
 		$transporteur	   = '';
 		$temp			   = [];
