@@ -6,204 +6,184 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Buzz\Browser;
+use Buzz\Browser as Browser;
 
 class DefaultController extends Controller
 {
+	/**
+	 * Nom du site
+	 * 
+	 * @var String
+	 */
+	protected $_siteName = 'kaliSiteVitrine';
+	
+	/**
+	 * Session
+	 * 
+	 * @var Session
+	 */
+	protected $_session = null;
+	
+	/**
+	 * méthode file_get_content()
+	 * 
+	 * @var Buzz\Browser
+	 */
+	protected $_browser = null;
+	
+	/**
+	 * Permet d'initialiser les données réutilisables
+	 * 
+	 */
+	public function initializer()
+	{
+		/* Récupération de la session */
+		$this->_session = $this->get('session');
+		
+		/* Création du bundle Browser */
+		$this->_browser = new Browser();
+		
+		/* Initialisation des données */
+		$config 	= $this->getConfig($this->_browser, $this->_siteName);
+		$theme  	= $this->getTheme($this->_browser, $config['theme']['id']);
+		$categories = $this->getCategories($this->_browser);
+		
+		/* Retourne un tableau de données */
+		return array(
+			'config' 	 => $config,
+			'theme'  	 => $theme,
+			'categories' => $categories,
+		);
+	}
+	
     /**
      * Page index du site
      * 
      * @Route("/", name="site.index")
+     * @Template()
      */
     public function indexAction()
     {
-    	//Création de l'API
-    	$browser = new Browser();
-    	
-    	////////////////////////////////
-    	//		API pour config		  //
-    	////////////////////////////////
-    	$response = $browser->get('http://back.kali.com/api/configurations/kaliSiteVitrine');   	
-    	//Tableau des infos config
-    	$infoConfig = json_decode($response->getContent(), true);  
-    	
-    	if (array_key_exists(0, $infoConfig)) {
-    		throw new NotFoundHttpException(sprintf('Configuration inconnue'));
-    	}   	
-    	$id_theme = $infoConfig['theme']['id'];
-
-    	//Recherche info thème
-    	$responseTheme = $browser->get('http://back.kali.com/api/themes/'.$id_theme);
-    	
-    	$infoTheme = json_decode($responseTheme->getContent(), true);
-    	
-    	if (array_key_exists(0, $infoTheme)) {
-    		throw new NotFoundHttpException(sprintf('Thème inconnue'));
-    	}
-    	
-    	////////////////////////////////
-    	//	  API pour catégories	  //
-    	////////////////////////////////
-    	
-    	$categories = $browser->get('http://back.kali.com/api/categories');
-		
-		//Tableau des infos config
-    	$infoCat = json_decode($categories->getContent(), true);
-    	
-    	//var_dump($infoCat); die();
-    	 
-    	if (!$infoCat) {
-    		throw new NotFoundHttpException(sprintf('Catégories introuvable'));
-    	}
-    	
-    	$panier = $this->get('session')->get('panier');
+    	$initializer = $this->initializer();
     	    	
-    	return $this->render('GblSiteVitrineBundle:Default:index.html.twig', array(
-    			'theme' 	 => $infoTheme,
-    			'categories' => $infoCat,
-    			'panier'	 => $panier,
-    	));
+    	return array(
+    		'theme' 	 => $initializer['theme'],
+    		'categories' => $initializer['categories'],
+    		'panier'	 => $this->_session->get('panier'),
+    	);
     }
     
     /**
      * Liste les 10 produits les plus vendus
      * 
      * @Route("/top10", name="site.top10")
+     * @Template()
      */
     public function top10Action()
-    {
-    	//Création de l'API
-    	$browser = new Browser();
-    	 
-    	////////////////////////////////
-    	//		API pour config		  //
-    	////////////////////////////////
-    	$response = $browser->get('http://back.kali.com/api/configurations/kaliSiteVitrine');
-    	//Tableau des infos config
-    	$infoConfig = json_decode($response->getContent(), true);
-    	 
-    	if (array_key_exists(0, $infoConfig)) {
-    		throw new NotFoundHttpException(sprintf('Configuration inconnue'));
-    	}
-    	$id_theme = $infoConfig['theme']['id'];
+    {	
+		$initializer = $this->initializer();
     	
-    	//Recherche info thème
-    	$responseTheme = $browser->get('http://back.kali.com/api/themes/'.$id_theme);
-    	 
-    	$infoTheme = json_decode($responseTheme->getContent(), true);
-    	 
-    	if (array_key_exists(0, $infoTheme)) {
-    		throw new NotFoundHttpException(sprintf('Thème inconnue'));
-    	}
-    	 
-    	////////////////////////////////
-    	//	  API pour catégories	  //
-    	////////////////////////////////
-    	 
-    	$categories = $browser->get('http://back.kali.com/api/categories');
-    	
-    	//Tableau des infos config
-    	$infoCat = json_decode($categories->getContent(), true);
-    	 
-    	//var_dump($infoCat); die();
-    	
-    	if (!$infoCat) {
-    		throw new NotFoundHttpException(sprintf('Catégories introuvable'));
-    	}
-    	
-    	////////////////////////////////
-    	//	API pour top 10 produits  //
-    	////////////////////////////////
-    	
-    	$produits = $browser->get('http://back.kali.com/api/top10/produit');
-    	 
-    	//Tableau des infos config
-    	$infoProd = json_decode($produits->getContent(), true);
-    	
-    	//var_dump($infoCat); die();
-    	 
-    	if (!$infoProd) {
-    		throw new NotFoundHttpException(sprintf('Produit top 10 introuvable'));
-    	}
-    	
-    	//var_dump($infoProd);die();
-    	 
-    	return $this->render('GblSiteVitrineBundle:Default:top10.html.twig', array(
-    			'theme' 	 => $infoTheme,
-    			'categories' => $infoCat,
-    			'produits'	 => $infoProd,
-    			
-    	));
+    	return array(
+    		'theme' 	 => $initializer['theme'],
+    		'categories' => $initializer['categories'],
+    		'produits'	 => $this->getTop($this->_browser),	
+    	);
     }
     
     /**
      * Liste tous les produits qui sont en vente flash
      * 
      * @Route("/flash", name="site.flash")
+     * @Template()
      */
-    public function ventePriveeAction()
+    public function flashAction()
     {
-    	//Création de l'API
-    	$browser = new Browser();
+    	$initializer = $this->initializer();
+    	
+    	return array(
+    		'theme' 	 => $initializer['theme'],
+    		'categories' => $initializer['categories'],
+    		'produits'	 => $this->getVenteFlash($this->_browser),	 
+    	);
+    }
     
-    	////////////////////////////////
-    	//		API pour config		  //
-    	////////////////////////////////
-    	$response = $browser->get('http://back.kali.com/api/configurations/kaliSiteVitrine');
-    	//Tableau des infos config
-    	$infoConfig = json_decode($response->getContent(), true);
+    /**
+     * Permet de récupérer la config
+     *
+     */
+    public function getConfig(Browser $browser, $site)
+    {
+    	$reponse = $browser->get('http://back.kali.com/api/configurations/' . $site);
+    	$config  = json_decode($reponse->getContent(), true);
     
-    	if (array_key_exists(0, $infoConfig)) {
+    	if (array_key_exists(0, $config)) {
     		throw new NotFoundHttpException(sprintf('Configuration inconnue'));
     	}
-    	$id_theme = $infoConfig['theme']['id'];
-    	 
-    	//Recherche info thème
-    	$responseTheme = $browser->get('http://back.kali.com/api/themes/'.$id_theme);
     
-    	$infoTheme = json_decode($responseTheme->getContent(), true);
+    	return $config;
+    }
     
-    	if (array_key_exists(0, $infoTheme)) {
+    /**
+     * Permet de récupérer les thèmes
+     *
+     */
+    public function getTheme(Browser $browser, $idTheme)
+    {
+    	$reponse =  $browser->get('http://back.kali.com/api/themes/' . $idTheme);
+    	$theme   = json_decode($reponse->getContent(), true);
+    
+    	if (array_key_exists(0, $theme)) {
     		throw new NotFoundHttpException(sprintf('Thème inconnue'));
     	}
     
-    	////////////////////////////////
-    	//	  API pour catégories	  //
-    	////////////////////////////////
+    	return $theme;
+    }
     
-    	$categories = $browser->get('http://back.kali.com/api/categories');
-    	 
-    	//Tableau des infos config
-    	$infoCat = json_decode($categories->getContent(), true);
+    /**
+     * Permet de récupérer les catégories
+     *
+     */
+    public function getCategories(Browser $browser)
+    {
+    	$reponse	= $browser->get('http://back.kali.com/api/categories');
+    	$categories = json_decode($reponse->getContent(), true);
     
-    	//var_dump($infoCat); die();
-    	 
-    	if (!$infoCat) {
+    	if (!$categories) {
     		throw new NotFoundHttpException(sprintf('Catégories introuvable'));
     	}
-    	 
-    	////////////////////////////////
-    	//	API pour top 10 produits  //
-    	////////////////////////////////
-    	 
-    	$produits = $browser->get('http://back.kali.com/api/vente/flash');
     
-    	//Tableau des infos config
-    	$infoProd = json_decode($produits->getContent(), true);
-    	 
-    	//var_dump($infoCat); die();
+    	return $categories;
+    }
     
-    	if (!$infoProd) {
-    		throw new NotFoundHttpException(sprintf('Produits introuvable'));
+    /**
+     * Permet de récupérer le Top10
+     *
+     */
+    public function getTop(Browser $browser)
+    {
+    	$reponse  = $browser->get('http://back.kali.com/api/top10/produit');
+    	$top	  = json_decode($reponse->getContent(), true);
+    
+    	if (!$prod) {
+    		throw new NotFoundHttpException(sprintf('Produit top 10 introuvable'));
     	}
-    	 
-    	//var_dump($infoProd);die();
     
-    	return $this->render('GblSiteVitrineBundle:Default:flash.html.twig', array(
-    			'theme' 	 => $infoTheme,
-    			'categories' => $infoCat,
-    			'produits'	 => $infoProd,
-    			 
-    	));
+    	return $top;
+    }
+    
+    /**
+     * Permet de récupérer les ventes flash
+     *
+     */
+    public function getVenteFlash(Browser $browser)
+    {
+    	$reponse    = $browser->get('http://back.kali.com/api/vente/flash');
+    	$venteFlash = json_decode($reponse->getContent(), true);
+    
+    	if (!$venteFlash) {
+    		throw new NotFoundHttpException(sprintf('Produits Vente Flash introuvable'));
+    	}
+    
+    	return $venteFlash;
     }
 }

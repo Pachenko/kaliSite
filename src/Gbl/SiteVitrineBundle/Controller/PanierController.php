@@ -154,7 +154,7 @@ class PanierController extends Controller
 		$transporteur 	   = $session->get('transporteur');
 		$poids 		  	   = $session->get('poids');
 		
-		/* On met � jour les stocks des produits */
+		/* On met a jour les stocks des produits */
 		
 		
 		/* On vide la session, la commande est confirm�e */

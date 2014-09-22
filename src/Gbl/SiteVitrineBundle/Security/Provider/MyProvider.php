@@ -2,10 +2,14 @@
 
 namespace Gbl\SiteVitrineBundle\Security\Provider;
 
-use FOS\UserBundle\Model\UserManagerInterface;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface as SecurityUserInterface;
+use FOS\UserBundle\Model\User;
+use FOS\UserBundle\Model\UserInterface;
+use FOS\UserBundle\Model\UserManagerInterface;
+use FOS\UserBundle\Propel\User as PropelUser;
 use Buzz\Browser;
 
 class MyProvider implements UserProviderInterface
@@ -18,11 +22,10 @@ class MyProvider implements UserProviderInterface
 	}
 
 	public function loadUserByUsername($username)
-	{
+	{	
 		$browser = new Browser();
 		$response = $browser->get('http://back.kali.com/api/users/' . $username);
-		
-		//Tableau des infos d'user
+
 		$infoUser = json_decode($response->getContent(), true);
 
 		if (array_key_exists(0, $infoUser)) {
@@ -34,13 +37,47 @@ class MyProvider implements UserProviderInterface
 		return $user;
 	}
 
-	public function refreshUser(UserInterface $user)
-	{
-		return $this->userManager->refreshUser($user);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function refreshUser(SecurityUserInterface $user)
+    {
+        if (!$user instanceof User && !$user instanceof PropelUser) {
+            throw new UnsupportedUserException(sprintf('Expected an instance of FOS\UserBundle\Model\User, but got "%s".', get_class($user)));
+        }
 
-	public function supportsClass($class)
-	{
-		return $this->userManager->supportsClass($class);
-	}
+        if (!$this->supportsClass(get_class($user))) {
+            throw new UnsupportedUserException(sprintf('Expected an instance of %s, but got "%s".', $this->userManager->getClass(), get_class($user)));
+        }
+
+        if (null === $reloadedUser = $this->userManager->findUserBy(array('id' => $user->getId()))) {
+            throw new UsernameNotFoundException(sprintf('User with ID "%d" could not be reloaded.', $user->getId()));
+        }
+
+        return $reloadedUser;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsClass($class)
+    {
+        $userClass = $this->userManager->getClass();
+
+        return $userClass === $class || is_subclass_of($class, $userClass);
+    }
+
+    /**
+     * Finds a user by username.
+     *
+     * This method is meant to be an extension point for child classes.
+     *
+     * @param string $username
+     *
+     * @return UserInterface|null
+     */
+    protected function findUser($username)
+    {
+        return $this->userManager->findUserByUsername($username);
+    }
 }
