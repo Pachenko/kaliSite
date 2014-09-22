@@ -8,20 +8,56 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Buzz\Browser;
+use Buzz\Browser as Browser;
 
 class PanierController extends Controller
 {
 	/**
-	 * 
-	 * 
+	 * Session
+	 *
+	 * @var Session
+	 */
+	protected $_session = null;
+	
+	/**
+	 * méthode file_get_content()
+	 *
+	 * @var Buzz\Browser
+	 */
+	protected $_browser = null;
+	
+	/**
+	 * Permet d'initialiser les données réutilisables
+	 */
+	public function initializer()
+	{
+		/* Récupération de la session */
+		$this->_session = $this->get('session');
+		
+		/* Création du bundle Browser */
+		$this->_browser = new Browser();
+		
+		/* Initialisation des données */
+		$categories   = $this->getCategories($this->_browser);
+		$transporteur = $this->getTransporteur($this->_browser);
+		
+		/* Retourne un tableau de données */
+		return array(
+			'categories'   => $categories,
+			'transporteur' => $transporteur,
+		);
+	}
+	
+	/**
 	 * @Route("/panier", name="panier.index")
+	 * @Template()
 	 */
 	public function indexAction()
 	{
-		$commandes = $this->get('session')->get('commandes');
-		$total     = 0;
-		$quantite  = 0;
+		$initializer = $this->initializer();
+		$commandes   = $this->_session->get('commandes');
+		$total       = 0;
+		$quantite    = 0;
 		
 		
 		if (isset($commandes)) { 
@@ -29,28 +65,15 @@ class PanierController extends Controller
 				$total += $produit['prix'] * $produit['quantite'];
 			}
 		}
+		
 		$quantite = count($commandes);
 		
-		////////////////////////////////
-		//	  API pour catégories	  //
-		////////////////////////////////
-		$browser = new Browser();
-		
-		$categories = $browser->get('http://back.kali.com/api/categories');
-		
-		//Tableau des infos config
-		$infoCat = json_decode($categories->getContent(), true);
-		
-		if (!$infoCat) {
-			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
-		}
-		
-		return $this->render('GblSiteVitrineBundle:Panier:index.html.twig', array(
+		return array(
 			'commande' 	 => $commandes,
 			'total'    	 => $total,	
 			'quantite' 	 => $quantite,
-			'categories' => $infoCat,
-		));
+			'categories' => $initializer['categories'],
+		);
 	}
 	
 	/**
@@ -61,7 +84,8 @@ class PanierController extends Controller
 	 */
 	public function achatAction()
 	{
-		$commandes 		   = $this->get('session')->get('commandes');
+		$initializer	   = $this->initializer();
+		$commandes 		   = $this->_session->get('commandes');
 		$user			   = $this->container->get('security.context')
 								   			 ->getToken()
 											 ->getUser();
@@ -91,37 +115,17 @@ class PanierController extends Controller
 		$ecotaxe   *= $poidsTotal;
 		$prixTotal += $ecotaxe;
 		
-		$browser 	   = new Browser();
-		$reponse 	   = $browser->get('http://back.kali.com/api/transporteurs');
-		$transporteurs = json_decode($reponse->getContent(), true);
-		
-		
-		if (isset($transporteurs)) {
-			foreach ($transporteurs as $k => $nom) {
+		if (isset($initializer['transporteur'])) {
+			foreach ($initializer['transporteur'] as $k => $nom) {
 				$temp[] = $nom['nom'];
 			}
 		}
 		
 		$transporteur = ($poidsTotal >= 1.5 && $dimensionTotal > 60) ? $temp[1] : $temp[0];
-		
-		$session = $this->get('session');
-		$session->set('prix', $prixTotal);
-		$session->set('transporteur', $transporteur);
-		$session->set('poids', $poidsTotal);
-		
-		////////////////////////////////
-		//	  API pour catégories	  //
-		////////////////////////////////
-		$browser = new Browser();
-		
-		$categories = $browser->get('http://back.kali.com/api/categories');
-		
-		//Tableau des infos config
-		$infoCat = json_decode($categories->getContent(), true);
-		
-		if (!$infoCat) {
-			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
-		}
+	
+		$this->_session->set('prix', $prixTotal);
+		$this->_session->set('transporteur', $transporteur);
+		$this->_session->set('poids', $poidsTotal);
 		
 		return array(
 			'commandes' 	    => $commandes,
@@ -132,7 +136,7 @@ class PanierController extends Controller
 			'prix'			    => $prix,
 			'transporteur'	    => $transporteur,	
 			'user'			    => $user,
-			'categories' 	    => $infoCat,
+			'categories' 	    => $initializer['categories'],
 			'referenceCommande' => $referenceCommande,
 			'statut'			=> $statut,
 			'date'				=> $date,
@@ -148,34 +152,23 @@ class PanierController extends Controller
 	 */
 	public function confirmAction(Request $request) 
 	{
-		$session	  	   = $this->get('session');
-		$commandes    	   = $session->get('commandes');
-		$prix	       	   = $session->get('prix');
-		$transporteur 	   = $session->get('transporteur');
-		$poids 		  	   = $session->get('poids');
+		$initializer	   = $this->initializer();
+		$commandes    	   = $this->_session->get('commandes');
+		$prix	       	   = $this->_session->get('prix');
+		$transporteur 	   = $this->_session->get('transporteur');
+		$poids 		  	   = $this->_session->get('poids');
 		
 		/* On met a jour les stocks des produits */
-		
+		//TO DO
 		
 		/* On vide la session, la commande est confirm�e */
-		$session->remove('commandes');
-		
-		$browser = new Browser();
-		
-		$categories = $browser->get('http://back.kali.com/api/categories');
-		
-		//Tableau des infos config
-		$infoCat = json_decode($categories->getContent(), true);
-		
-		if (!$infoCat) {
-			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
-		}
+		$this->_session->remove('commandes');
 		
 		return array(
-			'prix'	       		=> $prix,
-			'transporteur' 		=> $transporteur,
-			'poids'	       		=> $poids,
-			'categories'   		=> $infoCat,
+			'prix'	       => $prix,
+			'transporteur' => $transporteur,
+			'poids'	       => $poids,
+			'categories'   => $initializer['categories'],
 		);
 	}
 	
@@ -186,9 +179,12 @@ class PanierController extends Controller
 	 */
 	public function addAction(Request $request)
 	{
+		$initializer = $this->initializer();
+		
 		/* Recuperation de la reference du produit et sa quantite */
 		$reference  = $request->get('ref');
 		$quantite   = $request->get('qte');
+		
 		$jsonRetour = new JsonResponse();
 		$ajax       = 'ko';
 		
@@ -197,16 +193,14 @@ class PanierController extends Controller
 					->getToken()
 					->getUser();
 		
-		/* R�cup�ration du produit depuis le back */
-		$browser = new Browser();
-		$reponse = $browser->get('http://back.kali.com/api/produits/' . $reference);
-		$produit = json_decode($reponse->getContent(), true);
+		/* Récupération des produits dans le back */
+		$produit = $this->getProduit($this->_browser, $reference);
 
 		/* Ajout de la quatite pour un produit*/
 		$produit['quantite'] = intval($quantite);
 		
-		/* R�cup�ration de la session */
-		$commandes = $this->get('session')->get('commandes');
+		/* Récupération de la session */
+		$commandes = $this->_session->get('commandes');
 
 		/* Ajout du produit dans la commande */
 		if ($user !== 'anon.') {
@@ -215,8 +209,8 @@ class PanierController extends Controller
 		}
 				
 		/* Ajout de la commande dans la session */
-		$this->get('session')->set('commandes', $commandes);
-		$this->get('session')->set('panier', count($commandes));
+		$this->_session->set('commandes', $commandes);
+		$this->_session->set('panier', count($commandes));
 		
 		/* Retour ajax */
 		$jsonRetour->setData(array(
@@ -224,5 +218,53 @@ class PanierController extends Controller
 		));
 
 		return $jsonRetour;
+	}
+	
+	/**
+	 * Permet de récupérer les catégories
+	 * 
+	 * @param Browser $browser
+	 * @throws NotFoundHttpException
+	 * @return mixed
+	 */
+	public function getCategories(Browser $browser)
+	{
+		$reponse	= $browser->get('http://back.kali.com/api/categories');
+		$categories = json_decode($reponse->getContent(), true);
+	
+		if (!$categories) {
+			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
+		}
+	
+		return $categories;
+	}
+	
+	/**
+	 * Permet de récupérer les transporteurs
+	 * 
+	 * @param Browser $browser
+	 * @return mixed
+	 */
+	public function getTransporteur(Browser $browser)
+	{
+		$reponse 	   = $browser->get('http://back.kali.com/api/transporteurs');
+		$transporteurs = json_decode($reponse->getContent(), true);
+	
+		return $transporteurs;
+	}
+	
+	/**
+	 * Permet de récupérer les produits
+	 * 
+	 * @param Browser $browser
+	 * @param varchar $reference
+	 * @return array
+	 */
+	public function getProduit(Browser $browser, $reference)
+	{
+		$reponse = $browser->get('http://back.kali.com/api/produits/' . $reference);
+		$produit = json_decode($reponse->getContent(), true);
+		
+		return $produit;
 	}
 }
