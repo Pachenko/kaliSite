@@ -4,6 +4,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 	<services>
+		<service id="gbl.api_manager" class="Gbl\SiteVitrineBundle\Manager\ApiManager">
+			<argument type="service" id="session" />
+		</service>
 		<service id="gbl_user.my_provider" class="Gbl\SiteVitrineBundle\Security\Provider\MyProvider" public="false">
 		    <argument type="service" id="fos_user.user_manager" />
 		</service>

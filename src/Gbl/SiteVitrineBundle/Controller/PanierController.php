@@ -20,13 +20,6 @@ class PanierController extends Controller
 	protected $_session = null;
 	
 	/**
-	 * Méthode file_get_content()
-	 *
-	 * @var Buzz\Browser
-	 */
-	protected $_browser = null;
-	
-	/**
 	 * Ecotaxe initialisation
 	 * 
 	 * @var double
@@ -40,19 +33,6 @@ class PanierController extends Controller
 	{
 		/* Récupération de la session */
 		$this->_session = $this->get('session');
-		
-		/* Création du bundle Browser */
-		$this->_browser = new Browser();
-		
-		/* Initialisation des données */
-		$categories   = $this->getCategories($this->_browser);
-		$transporteur = $this->getTransporteur($this->_browser);
-		
-		/* Retourne un tableau de données */
-		return array(
-			'categories'   => $categories,
-			'transporteur' => $transporteur,
-		);
 	}
 	
 	/**
@@ -61,7 +41,8 @@ class PanierController extends Controller
 	 */
 	public function indexAction()
 	{
-		$initializer = $this->initializer();
+		$this->initializer();
+		
 		$commandes   = $this->_session->get('commandes');
 		$total       = 0;
 		$quantite    = 0;
@@ -79,7 +60,7 @@ class PanierController extends Controller
 			'commande' 	 => $commandes,
 			'total'    	 => $total,	
 			'quantite' 	 => $quantite,
-			'categories' => $initializer['categories'],
+			'categories' => $this->get('gbl.api_manager')->getCategories(),
 		);
 	}
 	
@@ -91,7 +72,8 @@ class PanierController extends Controller
 	 */
 	public function achatAction()
 	{
-		$initializer	   = $this->initializer();
+		$this->initializer();
+		
 		$commandes 		   = $this->_session->get('commandes');
 		$user			   = $this->container->get('security.context')
 								   			 ->getToken()
@@ -101,7 +83,7 @@ class PanierController extends Controller
 		$prixTotal		   = 0;
 		$prix			   = 0;
 		$ecotaxe		   = $this->_ecotaxe;
-		$transporteurs	   = [];
+		$transporteurs	   = $this->get('gbl.api_manager')->getTransporteur();
 		$transporteur	   = '';
 		$temp			   = [];
 		$dimensionTotal	   = 0;
@@ -122,8 +104,8 @@ class PanierController extends Controller
 		$ecotaxe   *= $poidsTotal;
 		$prixTotal += $ecotaxe;
 		
-		if (isset($initializer['transporteur'])) {
-			foreach ($initializer['transporteur'] as $k => $nom) {
+		if (isset($transporteurs)) {
+			foreach ($transporteurs as $k => $nom) {
 				$temp[] = $nom['nom'];
 			}
 		}
@@ -143,7 +125,7 @@ class PanierController extends Controller
 			'prix'			    => $prix,
 			'transporteur'	    => $transporteur,	
 			'user'			    => $user,
-			'categories' 	    => $initializer['categories'],
+			'categories' 	    => $this->get('gbl.api_manager')->getCategories(),
 			'referenceCommande' => $referenceCommande,
 			'statut'			=> $statut,
 			'date'				=> $date,
@@ -159,14 +141,14 @@ class PanierController extends Controller
 	 */
 	public function confirmAction(Request $request) 
 	{
-		$initializer	   = $this->initializer();
+		$this->initializer();
+		
 		$commandes    	   = $this->_session->get('commandes');
 		$prix	       	   = $this->_session->get('prix');
 		$transporteur 	   = $this->_session->get('transporteur');
 		$poids 		  	   = $this->_session->get('poids');
 		
 		/* On met a jour les stocks des produits */
-		//TO DO
 		
 		/* On vide la session, la commande est confirm�e */
 		$this->_session->remove('commandes');
@@ -175,7 +157,7 @@ class PanierController extends Controller
 			'prix'	       => $prix,
 			'transporteur' => $transporteur,
 			'poids'	       => $poids,
-			'categories'   => $initializer['categories'],
+			'categories'   => $this->get('gbl.api_manager')->getCategories(),
 		);
 	}
 	
@@ -186,7 +168,7 @@ class PanierController extends Controller
 	 */
 	public function addAction(Request $request)
 	{
-		$initializer = $this->initializer();
+		$this->initializer();
 		
 		/* Recuperation de la reference du produit et sa quantite */
 		$reference  = $request->get('ref');
@@ -201,7 +183,7 @@ class PanierController extends Controller
 					->getUser();
 		
 		/* Récupération des produits dans le back */
-		$produit = $this->getProduit($this->_browser, $reference);
+		$produit = $this->get('gbl.api_manager')->getProduit($reference);
 
 		/* Ajout de la quatite pour un produit*/
 		$produit['quantite'] = intval($quantite);
@@ -225,66 +207,5 @@ class PanierController extends Controller
 		));
 
 		return $jsonRetour;
-	}
-	
-	/**
-	 * Permet de récupérer les catégories
-	 * 
-	 * @param Browser $browser
-	 * @throws NotFoundHttpException
-	 * @return mixed
-	 */
-	public function getCategories(Browser $browser)
-	{
-		$categories = $this->getDataApi($browser, 'http://back.kali.com/api/categories');
-
-		if (!$categories) {
-			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
-		}
-		
-		return $categories;
-	}
-	
-	/**
-	 * Permet de récupérer les transporteurs
-	 * 
-	 * @param Browser $browser
-	 * @return mixed
-	 */
-	public function getTransporteur(Browser $browser)
-	{	
-		$transporteurs = $this->getDataApi($browser, 'http://back.kali.com/api/transporteurs');
-		
-		return $transporteurs;
-	}
-	
-	/**
-	 * Permet de récupérer les produits
-	 * 
-	 * @param Browser $browser
-	 * @param varchar $reference
-	 * @return array
-	 */
-	public function getProduit(Browser $browser, $reference)
-	{	
-		$produit = $this->getDataApi($browser, 'http://back.kali.com/api/produits/', $reference);
-		
-		return $produit;
-	}
-	
-	/**
-	 * Appel à l'API
-	 * 
-	 * @param Browser $browser
-	 * @param string $link
-	 * @param string $data
-	 * @return mixed
-	 */
-	public function getDataApi(Browser $browser, $link, $data = null)
-	{
-		$reponse = ($data) ? $browser->get($link . $data) : $browser->get($link);
-		$retour  = json_decode($reponse->getContent(), true);
-		
-		return $retour;
 	}
 }
