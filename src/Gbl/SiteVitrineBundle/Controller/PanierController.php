@@ -27,15 +27,6 @@ class PanierController extends Controller
 	protected $_ecotaxe = 0.52;
 	
 	/**
-	 * Permet d'initialiser les données réutilisables
-	 */
-	public function initializer()
-	{
-		/* Récupération de la session */
-		$this->_session = $this->get('session');
-	}
-	
-	/**
 	 * @Route("/panier", name="panier.index")
 	 * @Template()
 	 */
@@ -43,9 +34,9 @@ class PanierController extends Controller
 	{
 		$this->initializer();
 		
-		$commandes   = $this->_session->get('commandes');
-		$total       = 0;
-		$quantite    = 0;
+		$commandes = $this->get('session')->get('commandes');
+		$total     = 0;
+		$quantite  = 0;
 		
 		
 		if (isset($commandes)) { 
@@ -72,9 +63,8 @@ class PanierController extends Controller
 	 */
 	public function achatAction()
 	{
-		$this->initializer();
-		
-		$commandes 		   = $this->_session->get('commandes');
+		$session		   = $this->get('session');	
+		$commandes 		   = $session->get('commandes');
 		$user			   = $this->container->get('security.context')
 								   			 ->getToken()
 											 ->getUser();
@@ -112,9 +102,9 @@ class PanierController extends Controller
 		
 		$transporteur = ($poidsTotal >= 1.5 && $dimensionTotal > 60) ? $temp[1] : $temp[0];
 	
-		$this->_session->set('prix', $prixTotal);
-		$this->_session->set('transporteur', $transporteur);
-		$this->_session->set('poids', $poidsTotal);
+		$session->set('prix', $prixTotal);
+		$session->set('transporteur', $transporteur);
+		$session->set('poids', $poidsTotal);
 		
 		return array(
 			'commandes' 	    => $commandes,
@@ -141,17 +131,16 @@ class PanierController extends Controller
 	 */
 	public function confirmAction(Request $request) 
 	{
-		$this->initializer();
-		
-		$commandes    	   = $this->_session->get('commandes');
-		$prix	       	   = $this->_session->get('prix');
-		$transporteur 	   = $this->_session->get('transporteur');
-		$poids 		  	   = $this->_session->get('poids');
+		$session 	  = $this->get('session');
+		$commandes    = $session->get('commandes');
+		$prix	      = $session->get('prix');
+		$transporteur = $session->get('transporteur');
+		$poids 		  = $session->get('poids');
 		
 		/* On met a jour les stocks des produits */
 		
-		/* On vide la session, la commande est confirm�e */
-		$this->_session->remove('commandes');
+		/* On vide la session, la commande est confirmee */
+		$session->remove('commandes');
 		
 		return array(
 			'prix'	       => $prix,
@@ -168,12 +157,11 @@ class PanierController extends Controller
 	 */
 	public function addAction(Request $request)
 	{
-		$this->initializer();
-		
 		/* Recuperation de la reference du produit et sa quantite */
 		$reference  = $request->get('ref');
 		$quantite   = $request->get('qte');
 		
+		$session	= $this->get('session');
 		$jsonRetour = new JsonResponse();
 		$ajax       = 'ko';
 		
@@ -189,7 +177,7 @@ class PanierController extends Controller
 		$produit['quantite'] = intval($quantite);
 		
 		/* Récupération de la session */
-		$commandes = $this->_session->get('commandes');
+		$commandes = $session->get('commandes');
 
 		/* Ajout du produit dans la commande */
 		if ($user !== 'anon.') {
@@ -198,8 +186,8 @@ class PanierController extends Controller
 		}
 				
 		/* Ajout de la commande dans la session */
-		$this->_session->set('commandes', $commandes);
-		$this->_session->set('panier', count($commandes));
+		$session->set('commandes', $commandes);
+		$session->set('panier', count($commandes));
 		
 		/* Retour ajax */
 		$jsonRetour->setData(array(
