@@ -10,23 +10,6 @@ use Buzz\Browser as Browser;
 
 class DefaultController extends Controller
 {	
-	/**
-	 * Session
-	 * 
-	 * @var Session
-	 */
-	protected $_session = null;
-	
-	/**
-	 * Permet d'initialiser les données réutilisables
-	 * 
-	 */
-	public function initializer()
-	{
-		/* Récupération de la session */
-		$this->_session = $this->get('session');
-	}
-	
     /**
      * Page index du site
      * 
@@ -35,12 +18,10 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-    	$this->initializer();
-    	
     	return array(
     		'theme' 	 => $this->get('gbl.api_manager')->getTheme(),
     		'categories' => $this->get('gbl.api_manager')->getCategories(),
-    		'panier'	 => $this->_session->get('panier'),
+    		'panier'	 => $this->get('session')->get('panier'),
     	);
     }
     

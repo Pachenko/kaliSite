@@ -32,8 +32,6 @@ class PanierController extends Controller
 	 */
 	public function indexAction()
 	{
-		$this->initializer();
-		
 		$commandes = $this->get('session')->get('commandes');
 		$total     = 0;
 		$quantite  = 0;
