@@ -28,6 +28,14 @@ class ApiManager
 	 */
 	protected $_browser = null;
 	
+	const API_CONFIGURATION = 'http://back.kali.com/api/configurations/';
+	const API_THEME 		= 'http://back.kali.com/api/themes/';
+	const API_TRANSPORTEUR  = 'http://back.kali.com/api/transporteurs';
+	const API_CATEGORIES	= 'http://back.kali.com/api/categories';
+	const API_TOP			= 'http://back.kali.com/api/top10/produit';
+	const API_PRODUIT		= 'http://back.kali.com/api/produits/';
+	const API_VENTE_FLASH	= 'http://back.kali.com/api/vente/flash';
+	
 	/**
 	 * Permet d'initialiser les données réutilisables
 	 *
@@ -47,7 +55,7 @@ class ApiManager
 	 */
 	public function getConfig()
 	{
-		$config = $this->getDataApi('http://back.kali.com/api/configurations/', $this->_siteName);
+		$config = $this->getDataApi(self::API_CONFIGURATION, $this->_siteName);
 	
 		if (array_key_exists(0, $config)) {
 			throw new NotFoundHttpException(sprintf('Configuration inconnue'));
@@ -63,7 +71,7 @@ class ApiManager
 	public function getTheme()
 	{
 		$config = $this->getConfig();
-		$theme  = $this->getDataApi('http://back.kali.com/api/themes/', $config['theme']['id']);
+		$theme  = $this->getDataApi(self::API_THEME, $config['theme']['id']);
 	
 		if (array_key_exists(0, $theme)) {
 			throw new NotFoundHttpException(sprintf('Thème inconnue'));
@@ -80,7 +88,7 @@ class ApiManager
 	 */
 	public function getTransporteur()
 	{
-		$transporteurs = $this->getDataApi('http://back.kali.com/api/transporteurs');
+		$transporteurs = $this->getDataApi(self::API_TRANSPORTEUR);
 	
 		return $transporteurs;
 	}
@@ -91,7 +99,7 @@ class ApiManager
 	 */
 	public function getCategories()
 	{
-		$categories = $this->getDataApi('http://back.kali.com/api/categories');
+		$categories = $this->getDataApi(self::API_CATEGORIES);
 		
 		if (!$categories) {
 			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
@@ -106,9 +114,9 @@ class ApiManager
 	 */
 	public function getTop()
 	{
-		$top = $this->getDataApi('http://back.kali.com/api/top10/produit');
+		$top = $this->getDataApi(self::API_TOP);
 	
-		if (!$prod) {
+		if (!$top) {
 			throw new NotFoundHttpException(sprintf('Produit top 10 introuvable'));
 		}
 		
@@ -124,7 +132,7 @@ class ApiManager
 	 */
 	public function getProduit($reference)
 	{
-		$produit = $this->getDataApi($browser, 'http://back.kali.com/api/produits/', $reference);
+		$produit = $this->getDataApi(self::API_PRODUIT, $reference);
 	
 		return $produit;
 	}
@@ -135,7 +143,7 @@ class ApiManager
 	 */
 	public function getVenteFlash()
 	{
-		$venteFlash = $this->getDataApi('http://back.kali.com/api/vente/flash');
+		$venteFlash = $this->getDataApi(self::API_VENTE_FLASH);
 
 		if (!$venteFlash) {
 			throw new NotFoundHttpException(sprintf('Produits Vente Flash introuvable'));
