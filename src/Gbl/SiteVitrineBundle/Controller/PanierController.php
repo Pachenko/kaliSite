@@ -236,13 +236,12 @@ class PanierController extends Controller
 	 */
 	public function getCategories(Browser $browser)
 	{
-		$reponse	= $browser->get('http://back.kali.com/api/categories');
-		$categories = json_decode($reponse->getContent(), true);
-	
+		$categories = $this->getDataApi($browser, 'http://back.kali.com/api/categories');
+
 		if (!$categories) {
 			throw new NotFoundHttpException(sprintf('Catégories introuvable'));
 		}
-	
+		
 		return $categories;
 	}
 	
@@ -253,10 +252,9 @@ class PanierController extends Controller
 	 * @return mixed
 	 */
 	public function getTransporteur(Browser $browser)
-	{
-		$reponse 	   = $browser->get('http://back.kali.com/api/transporteurs');
-		$transporteurs = json_decode($reponse->getContent(), true);
-	
+	{	
+		$transporteurs = $this->getDataApi($browser, 'http://back.kali.com/api/transporteurs');
+		
 		return $transporteurs;
 	}
 	
@@ -268,10 +266,25 @@ class PanierController extends Controller
 	 * @return array
 	 */
 	public function getProduit(Browser $browser, $reference)
-	{
-		$reponse = $browser->get('http://back.kali.com/api/produits/' . $reference);
-		$produit = json_decode($reponse->getContent(), true);
+	{	
+		$produit = $this->getDataApi($browser, 'http://back.kali.com/api/produits/', $reference);
 		
 		return $produit;
+	}
+	
+	/**
+	 * Appel à l'API
+	 * 
+	 * @param Browser $browser
+	 * @param string $link
+	 * @param string $data
+	 * @return mixed
+	 */
+	public function getDataApi(Browser $browser, $link, $data = null)
+	{
+		$reponse = ($data) ? $browser->get($link . $data) : $browser->get($link);
+		$retour  = json_decode($reponse->getContent(), true);
+		
+		return $retour;
 	}
 }
